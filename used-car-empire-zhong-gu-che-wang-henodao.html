@@ -1,0 +1,2206 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>USED CAR EMPIRE — 中古車王への道</title>
+    <style>
+      :root{
+        --bg:#edf0f4; --surface:#ffffff; --surface2:#f5f7fa; --ink:#17222f; --muted:#5d6d80;
+        --line:#d7dee7; --brand:#0e3a5d; --brand2:#155e8a; --accent:#e4572e; --accent-ink:#fff;
+        --good:#178a5b; --bad:#cf3f3f; --warn:#d9930d; --chip:#e3ebf3;
+        --shadow:0 1px 3px rgba(16,42,67,.12),0 4px 14px rgba(16,42,67,.06);
+        color-scheme:light;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d141d; --surface:#16212e; --surface2:#1c2a3a; --ink:#e8eef5; --muted:#9db0c3;
+          --line:#2c3d50; --brand:#7fb6dd; --brand2:#9cc8e8; --accent:#ff7d4d; --chip:#22344a;
+          --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+          color-scheme:dark;
+        }
+      }
+      *{box-sizing:border-box}
+      html{-webkit-text-size-adjust:100%}
+      body{margin:0;background:var(--bg);color:var(--ink);
+        font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif;
+        font-size:15px;line-height:1.55}
+      .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+      button{font:inherit;cursor:pointer}
+      input,select{font:inherit}
+      a{color:var(--brand2)}
+      /* ---------- header ---------- */
+      header.top{position:sticky;top:0;z-index:40;background:var(--brand);color:#fff;
+        box-shadow:0 2px 10px rgba(0,0,0,.25)}
+      @media (prefers-color-scheme: dark){ header.top{background:#0a1622} }
+      .top-in{max-width:1180px;margin:0 auto;padding:8px 14px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+      .ttl{font-weight:800;letter-spacing:.02em;font-size:15px;white-space:nowrap}
+      .ttl small{display:block;font-weight:600;font-size:11px;opacity:.75;letter-spacing:.08em}
+      .stats{display:flex;flex-wrap:wrap;gap:6px 16px;margin-left:auto;align-items:center;font-size:13px}
+      .stats b{font-size:15px}
+      .stats .neg{color:#ffb3a7}
+      .daybtn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;
+        padding:9px 16px;font-weight:800;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+      .daybtn:active{transform:translateY(1px)}
+      .repbar{display:inline-block;width:64px;height:7px;background:rgba(255,255,255,.25);border-radius:4px;vertical-align:middle;overflow:hidden}
+      .repbar i{display:block;height:100%;background:#ffd166}
+      /* ---------- nav ---------- */
+      nav.tabs{position:sticky;top:57px;z-index:39;background:var(--surface);border-bottom:1px solid var(--line);
+        overflow-x:auto;scrollbar-width:none}
+      nav.tabs::-webkit-scrollbar{display:none}
+      .tabs-in{max-width:1180px;margin:0 auto;display:flex;gap:2px;padding:0 8px}
+      .tab{border:0;background:none;color:var(--muted);padding:11px 12px;font-weight:700;font-size:13.5px;
+        border-bottom:3px solid transparent;white-space:nowrap;position:relative}
+      .tab.on{color:var(--brand);border-bottom-color:var(--accent)}
+      @media (prefers-color-scheme: dark){ .tab.on{color:var(--brand2)} }
+      .tab .bdg{position:absolute;top:5px;right:2px;background:var(--accent);color:#fff;font-size:10px;
+        min-width:17px;height:17px;border-radius:9px;line-height:17px;text-align:center;padding:0 4px}
+      /* ---------- layout ---------- */
+      main{max-width:1180px;margin:0 auto;padding:16px 14px 90px}
+      h2.vt{font-size:19px;margin:2px 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+      h2.vt small{color:var(--muted);font-size:12.5px;font-weight:600}
+      h3.st{font-size:15px;margin:18px 0 8px;border-left:4px solid var(--accent);padding-left:8px}
+      .grid{display:grid;gap:12px}
+      .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+      @media(max-width:860px){ .g3,.g4{grid-template-columns:repeat(2,1fr)} }
+      @media(max-width:520px){ .g2,.g3,.g4{grid-template-columns:1fr 1fr} .kpi-grid{grid-template-columns:1fr 1fr!important} }
+      .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow)}
+      .kpi .lb{font-size:12px;color:var(--muted);font-weight:700}
+      .kpi .vl{font-size:21px;font-weight:800;margin-top:2px}
+      .kpi .sub{font-size:12px;color:var(--muted)}
+      .pos{color:var(--good)} .neg2{color:var(--bad)}
+      .btn{display:inline-block;border:1px solid var(--line);background:var(--surface2);color:var(--ink);
+        border-radius:8px;padding:8px 14px;font-weight:700;font-size:13.5px;text-decoration:none}
+      .btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+      @media (prefers-color-scheme: dark){ .btn.pri{background:#155e8a;border-color:#155e8a} }
+      .btn.acc{background:var(--accent);border-color:var(--accent);color:#fff}
+      .btn.dgr{background:none;border-color:var(--bad);color:var(--bad)}
+      .btn:disabled{opacity:.45;cursor:not-allowed}
+      .btn.sm{padding:5px 10px;font-size:12.5px}
+      .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+      .sp{flex:1}
+      .muted{color:var(--muted)} .small{font-size:12.5px} .tiny{font-size:11.5px}
+      .tag{display:inline-block;background:var(--chip);border-radius:20px;padding:1px 9px;font-size:11.5px;font-weight:700;color:var(--brand)}
+      @media (prefers-color-scheme: dark){ .tag{color:var(--brand2)} }
+      .tag.warn{background:#fbeed3;color:#8a5c00} .tag.bad{background:#fbe0e0;color:#a02525} .tag.good{background:#dcf2e7;color:#0d6b43}
+      @media (prefers-color-scheme: dark){ .tag.warn{background:#4a3a14;color:#ffd98a}.tag.bad{background:#4a1e1e;color:#ffabab}.tag.good{background:#123c2a;color:#8fe3bb} }
+      /* ---------- car cards ---------- */
+      .carcard{display:flex;flex-direction:column;gap:6px}
+      .car-visual{min-height:150px;border-radius:9px;display:flex;align-items:flex-start;padding:8px 10px;color:#fff;position:relative;overflow:hidden}
+      .car-visual .cat{font-size:11px;font-weight:800;letter-spacing:.06em;background:rgba(0,0,0,.35);padding:1px 8px;border-radius:12px}
+      .car-visual .nm{font-size:16.5px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,.5);line-height:1.25}
+      .car-visual svg{position:absolute;left:50%;transform:translateX(-50%);bottom:0;max-width:96%}
+      .spec{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:12.5px;color:var(--muted)}
+      .condbar{display:flex;align-items:center;gap:6px;font-size:11.5px}
+      .condbar .bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+      .condbar .bar i{display:block;height:100%}
+      .price-row{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+      .ask{font-size:19px;font-weight:800}
+      table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+      table.tbl th,table.tbl td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+      table.tbl th{color:var(--muted);font-size:12px;white-space:nowrap}
+      table.tbl td.r,table.tbl th.r{text-align:right}
+      .scrollx{overflow-x:auto}
+       .detail-visual{border-radius:10px;margin-bottom:12px;display:flex;justify-content:center;padding:6px 4px 0;background:linear-gradient(180deg,#aebfd0,#5d7186)}
+  .claim-banner{max-width:1180px;margin:10px auto 0;padding:0 14px}
+  .claim-banner-in{background:#fdeeee;border:1.5px solid var(--bad);border-radius:10px;padding:10px 12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13.5px}
+  @media (prefers-color-scheme: dark){ .claim-banner-in{background:#3d1717} }
+  .claim-badge{background:var(--bad);color:#fff;border-radius:12px;padding:1px 9px;font-weight:800;font-size:12px;border:0}
+  .jobrow{border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
+  .jobrow .qb{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+  .jobrow .qb button{width:100%}
+  @media(max-width:520px){ .jobrow .qb{grid-template-columns:1fr} }
+  /* ---------- modal ---------- */
+      #modal{position:fixed;inset:0;z-index:80;display:none}
+      #modal.open{display:block}
+      .mbox-bg{position:absolute;inset:0;background:rgba(8,17,28,.55)}
+      .mbox{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,94vw);
+        max-height:88vh;overflow-y:auto;background:var(--surface);border-radius:14px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+      .mbox h3{margin:0 0 10px;font-size:17px}
+      .field{margin:10px 0}
+      .field label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px}
+      .field input[type=text],.field input[type=number],.field select{width:100%;padding:9px 10px;border:1px solid var(--line);
+        border-radius:8px;background:var(--surface);color:var(--ink)}
+      input[type=range]{width:100%}
+      .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99;background:#17222f;color:#fff;
+        padding:10px 18px;border-radius:24px;font-size:13.5px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.35);
+        opacity:0;pointer-events:none;transition:opacity .25s;max-width:92vw;text-align:center}
+      .toast.show{opacity:1}
+      .news-item{border-bottom:1px solid var(--line);padding:9px 2px}
+      .news-item:last-child{border-bottom:0}
+      .alertbox{border:1px solid var(--warn);background:#fdf6e3;border-radius:10px;padding:10px 12px;font-size:13.5px}
+      @media (prefers-color-scheme: dark){ .alertbox{background:#3a2f10} }
+      .alertbox.red{border-color:var(--bad);background:#fdeeee}
+      @media (prefers-color-scheme: dark){ .alertbox.red{background:#3d1717} }
+      .check li{margin:3px 0}
+      .done{color:var(--good);font-weight:700}
+      .prog{height:9px;background:var(--line);border-radius:5px;overflow:hidden}
+      .prog i{display:block;height:100%;background:var(--accent)}
+      .hero{background:var(--brand);color:#fff;border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+      @media (prefers-color-scheme: dark){ .hero{background:#0a1622} }
+      .hero h1{margin:0 0 4px;font-size:26px;letter-spacing:.02em}
+      .hero p{margin:4px 0;opacity:.85;font-size:13.5px}
+      .seg{display:flex;gap:6px;flex-wrap:wrap}
+      .seg button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 12px;font-weight:700;font-size:13px}
+      .seg button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+      @media (prefers-color-scheme: dark){ .seg button.on{background:#155e8a;border-color:#155e8a} }
+      .ach{display:flex;gap:10px;align-items:flex-start}
+      .ach .ic{font-size:20px;line-height:1.2}
+      .kv{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+      .kv:last-child{border-bottom:0}
+      footer.note{max-width:1180px;margin:0 auto;padding:0 14px 30px;color:var(--muted);font-size:11.5px}
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="modal"></div>
+    <div class="toast" id="toast"></div>
+    <script>
+"use strict";
+/* =========================================================
+   USED CAR EMPIRE — 中古車王への道
+   データとロジックを分離した単一ファイル実装。
+   価格はすべてゲーム用の推定値（実在車種の相場を参考にした仮想価格）。
+   ========================================================= */
+var SAVE_KEY = "uce_save_v1";
+var SAVE_VER = 1;
+
+/* ---------- utils ---------- */
+function rnd(a,b){ return a + Math.random()*(b-a); }
+function ri(a,b){ return Math.floor(rnd(a,b+1)); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function man(n){ // 円 → 万円表記
+  var v = Math.round(n/10000);
+  if (Math.abs(v) >= 10000) return (v/10000).toFixed(v%10000===0?0:1).replace(/\.0$/,"") + "億円";
+  return v.toLocaleString("ja-JP") + "万円";
+}
+function yen(n){ return Math.round(n).toLocaleString("ja-JP") + "円"; }
+function kmf(km){ return (km/10000).toFixed(1).replace(/\.0$/,"") + "万km"; }
+var _uid = 1;
+function uid(p){ return p + "_" + (_uid++) + "_" + Math.floor(Math.random()*1e6); }
+function toast(msg){
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._tm); t._tm = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+}
+function dateStr(d){
+  var dt = new Date(2026,3,1); dt.setDate(dt.getDate() + (d-1));
+  var w = ["日","月","火","水","木","金","土"][dt.getDay()];
+  return dt.getFullYear() + "年" + (dt.getMonth()+1) + "月" + dt.getDate() + "日(" + w + ")";
+}
+function monthKey(day){ var dt=new Date(2026,3,1); dt.setDate(dt.getDate()+(day-1)); return dt.getFullYear()*100 + (dt.getMonth()+1); }
+function monthLabel(day){ var dt=new Date(2026,3,1); dt.setDate(dt.getDate()+(day-1)); return dt.getFullYear() + "年" + (dt.getMonth()+1) + "月"; }
+function isMonthEnd(day){ var a=new Date(2026,3,1); a.setDate(a.getDate()+(day-1)); var b=new Date(2026,3,1); b.setDate(b.getDate()+day); return a.getMonth()!==b.getMonth(); }
+
+/* ---------- 車種データベース（実在車種モデル／価格はゲーム用推定） ---------- */
+/* cat, 新車価格(万円), 人気1-5, 希少1-5, 燃費km/L, ブランド1-5, グレード例 */
+var MODELS = [
+ {mk:"ホンダ",nm:"N-BOX",cat:"軽自動車",body:"軽ハイトワゴン",np:185,pop:5,rare:1,fuel:21,br:3,gr:["G","L","カスタム L"]},
+ {mk:"ダイハツ",nm:"タント",cat:"軽自動車",body:"軽ハイトワゴン",np:155,pop:4,rare:1,fuel:21,br:2,gr:["L","X","カスタム RS"]},
+ {mk:"スズキ",nm:"ハスラー",cat:"軽自動車",body:"軽クロスオーバー",np:155,pop:4,rare:2,fuel:23,br:2,gr:["G","X","Jスタイル"]},
+ {mk:"スズキ",nm:"ワゴンR",cat:"軽自動車",body:"軽ハイトワゴン",np:140,pop:3,rare:1,fuel:24,br:2,gr:["FA","FX","スティングレー"]},
+ {mk:"ダイハツ",nm:"ムーヴキャンバス",cat:"軽自動車",body:"軽ハイトワゴン",np:165,pop:3,rare:1,fuel:21,br:2,gr:["G","X","ストライプス G"]},
+ {mk:"ホンダ",nm:"フィット",cat:"コンパクトカー",body:"ハッチバック",np:180,pop:4,rare:1,fuel:22,br:3,gr:["ベーシック","ホーム","クロスター"]},
+ {mk:"トヨタ",nm:"ヤリス",cat:"コンパクトカー",body:"ハッチバック",np:175,pop:4,rare:1,fuel:26,br:3,gr:["X","G","Z"]},
+ {mk:"日産",nm:"ノート",cat:"コンパクトカー",body:"ハッチバック",np:230,pop:4,rare:1,fuel:28,br:3,gr:["X","X FOUR","オーテック"]},
+ {mk:"スズキ",nm:"スイフト",cat:"コンパクトカー",body:"ハッチバック",np:190,pop:3,rare:2,fuel:22,br:2,gr:["XG","HYBRID MZ","スポーツ"]},
+ {mk:"ホンダ",nm:"シビック",cat:"コンパクトカー",body:"ハッチバック",np:330,pop:3,rare:3,fuel:17,br:3,gr:["LX","EX","タイプR"]},
+ {mk:"トヨタ",nm:"プリウス",cat:"ハイブリッドカー",body:"セダン",np:320,pop:5,rare:2,fuel:28,br:4,gr:["X","U","Z"]},
+ {mk:"トヨタ",nm:"アクア",cat:"ハイブリッドカー",body:"ハッチバック",np:215,pop:4,rare:1,fuel:30,br:3,gr:["B","X","Z"]},
+ {mk:"トヨタ",nm:"SAI",cat:"ハイブリッドカー",body:"セダン",np:380,pop:2,rare:3,fuel:21,br:4,gr:["S","G","G Aパッケージ"]},
+ {mk:"トヨタ",nm:"カローラ ハイブリッド",cat:"ハイブリッドカー",body:"セダン",np:260,pop:4,rare:1,fuel:27,br:3,gr:["G-X","ハイブリッド G","ハイブリッド WxB"]},
+ {mk:"トヨタ",nm:"ヴォクシー",cat:"ミニバン",body:"ミニバン",np:340,pop:5,rare:1,fuel:18,br:3,gr:["X","S-G","S-Z"]},
+ {mk:"日産",nm:"セレナ",cat:"ミニバン",body:"ミニバン",np:320,pop:4,rare:1,fuel:17,br:3,gr:["X","XV","e-POWER ハイウェイスター"]},
+ {mk:"ホンダ",nm:"ステップワゴン",cat:"ミニバン",body:"ミニバン",np:340,pop:4,rare:1,fuel:16,br:3,gr:["エアー","スパーダ","スパーダ プレミアムライン"]},
+ {mk:"ホンダ",nm:"フリード",cat:"ミニバン",body:"コンパクトミニバン",np:260,pop:4,rare:1,fuel:19,br:3,gr:["G","クロスター","e:HEV クロスター"]},
+ {mk:"トヨタ",nm:"アルファード",cat:"ミニバン",body:"ミニバン",np:540,pop:5,rare:3,fuel:14,br:5,gr:["S","S Cパッケージ","エグゼクティブラウンジ"]},
+ {mk:"トヨタ",nm:"RAV4",cat:"SUV",body:"SUV",np:330,pop:4,rare:2,fuel:16,br:3,gr:["X","G","アドベンチャー"]},
+ {mk:"トヨタ",nm:"ハリアー",cat:"SUV",body:"SUV",np:360,pop:5,rare:2,fuel:17,br:4,gr:["S","G","Z"]},
+ {mk:"日産",nm:"エクストレイル",cat:"SUV",body:"SUV",np:340,pop:4,rare:1,fuel:16,br:3,gr:["S","X","G"]},
+ {mk:"マツダ",nm:"CX-5",cat:"SUV",body:"SUV",np:320,pop:4,rare:2,fuel:16,br:3,gr:["スマートエディション","プロアクティブ","エクスクルーシブモード"]},
+ {mk:"スバル",nm:"フォレスター",cat:"SUV",body:"SUV",np:330,pop:3,rare:2,fuel:15,br:3,gr:["ツーリング","X-ブレイク","SPORT"]},
+ {mk:"トヨタ",nm:"ランドクルーザー",cat:"SUV",body:"SUV",np:550,pop:5,rare:4,fuel:10,br:5,gr:["GX","AX","ZX"]},
+ {mk:"トヨタ",nm:"カローラ",cat:"セダン",body:"セダン",np:220,pop:4,rare:1,fuel:19,br:3,gr:["G-X","S","WxB"]},
+ {mk:"トヨタ",nm:"クラウン",cat:"セダン",body:"セダン",np:510,pop:4,rare:3,fuel:18,br:5,gr:["ハイブリッド S","ハイブリッド G","RS アドバンス"]},
+ {mk:"日産",nm:"スカイライン",cat:"セダン",body:"セダン",np:450,pop:3,rare:3,fuel:13,br:4,gr:["GT","GT タイプP","400R"]},
+ {mk:"三菱",nm:"ギャランフォルティス",cat:"セダン",body:"セダン",np:240,pop:2,rare:3,fuel:14,br:2,gr:["スポーツ","スーパーエクシード","ラリーアート"]},
+ {mk:"トヨタ",nm:"カムリ",cat:"セダン",body:"セダン",np:360,pop:3,rare:2,fuel:24,br:4,gr:["X","G","WS"]},
+ {mk:"レクサス",nm:"IS",cat:"セダン",body:"セダン",np:480,pop:4,rare:2,fuel:15,br:5,gr:["IS300","IS300h バージョンL","IS500 Fスポーツ"]},
+ {mk:"マツダ",nm:"ロードスター",cat:"スポーツカー",body:"オープンカー",np:300,pop:5,rare:4,fuel:16,br:3,gr:["S","S レザーパッケージ","NR-A"]},
+ {mk:"スバル",nm:"WRX STI",cat:"スポーツカー",body:"セダン",np:430,pop:4,rare:5,fuel:10,br:4,gr:["STI","STI タイプS","S209 スタイル"]},
+ {mk:"三菱",nm:"ランサーエボリューションX",cat:"スポーツカー",body:"セダン",np:420,pop:4,rare:5,fuel:10,br:3,gr:["GSR","GSR プレミアム","ファイナルエディション"]},
+ {mk:"トヨタ",nm:"GR86",cat:"スポーツカー",body:"クーペ",np:330,pop:4,rare:3,fuel:13,br:3,gr:["SZ","RZ","GRパーツ仕様"]},
+ {mk:"日産",nm:"フェアレディZ",cat:"スポーツカー",body:"クーペ",np:550,pop:4,rare:4,fuel:11,br:4,gr:["ベース","バージョンS","バージョンST"]},
+ {mk:"レクサス",nm:"LS",cat:"高級車",body:"セダン",np:1100,pop:3,rare:3,fuel:13,br:5,gr:["LS500","LS500h バージョンL","LS500 Fスポーツ"]},
+ {mk:"メルセデス・ベンツ",nm:"Sクラス",cat:"高級車",body:"セダン",np:1250,pop:3,rare:3,fuel:11,br:5,gr:["S400","S500","S580"]},
+ {mk:"BMW",nm:"7シリーズ",cat:"高級車",body:"セダン",np:1150,pop:2,rare:3,fuel:11,br:5,gr:["740i","740d","M760Li"]},
+ {mk:"アルファロメオ",nm:"ジュリエッタ",cat:"輸入車",body:"ハッチバック",np:340,pop:2,rare:4,fuel:14,br:3,gr:["スプリント","ヴェローチェ","クアドリフォリオ"]},
+ {mk:"フォルクスワーゲン",nm:"ゴルフ",cat:"輸入車",body:"ハッチバック",np:320,pop:3,rare:2,fuel:17,br:3,gr:["TSI コンフォート","TSI ハイライン","GTI"]},
+ {mk:"MINI",nm:"クーパー",cat:"輸入車",body:"ハッチバック",np:330,pop:4,rare:2,fuel:16,br:4,gr:["クーパー","クーパーS","ジョンクーパーワークス"]},
+ {mk:"メルセデス・ベンツ",nm:"Cクラス",cat:"輸入車",body:"セダン",np:550,pop:4,rare:2,fuel:15,br:5,gr:["C180","C220d","AMG C43"]},
+ {mk:"BMW",nm:"3シリーズ",cat:"輸入車",body:"セダン",np:540,pop:4,rare:2,fuel:15,br:5,gr:["318i","320d","M340i"]},
+ {mk:"アウディ",nm:"A4",cat:"輸入車",body:"セダン",np:520,pop:3,rare:2,fuel:15,br:4,gr:["35 TFSI","40 TDI","S line"]},
+ {mk:"トヨタ",nm:"ハイエースバン",cat:"商用車",body:"バン",np:280,pop:5,rare:1,fuel:11,br:3,gr:["DX","スーパーGL","ダークプライム"]},
+ {mk:"日産",nm:"キャラバン",cat:"商用車",body:"バン",np:270,pop:4,rare:1,fuel:12,br:3,gr:["DX","プレミアムGX","プロスタイル"]},
+ {mk:"トヨタ",nm:"プロボックス",cat:"商用車",body:"ライトバン",np:180,pop:4,rare:1,fuel:18,br:2,gr:["DXコンフォート","GL","F"]},
+ {mk:"ダイハツ",nm:"ハイゼットカーゴ",cat:"商用車",body:"軽バン",np:130,pop:4,rare:1,fuel:17,br:2,gr:["スペシャル","クルーズ","デラックス"]},
+ {mk:"スズキ",nm:"キャリイ",cat:"商用車",body:"軽トラック",np:120,pop:4,rare:1,fuel:18,br:2,gr:["KC","KCエアコン","農繁スペシャル"]}
+];
+var CATS = ["軽自動車","コンパクトカー","ハイブリッドカー","ミニバン","SUV","セダン","スポーツカー","高級車","輸入車","商用車"];
+var COLORS = ["パールホワイト","ブラック","シルバー","グレー","レッド","ブルー","ネイビー","ベージュ","グリーン","ブラウン","ワインレッド","オレンジ"];
+var EQUIP = ["純正ナビ","バックカメラ","ETC","ドラレコ","シートヒーター","クルーズコントロール","衝突軽減ブレーキ","両側スライドドア","本革シート","サンルーフ","4WD","ターボ","スマートキー","LEDヘッドライト","純正アルミ"];
+var CAT_COLOR = {"軽自動車":"#7a9e43","コンパクトカー":"#3e7cb1","ハイブリッドカー":"#2a9d8f","ミニバン":"#6d6fb8","SUV":"#a05c2c","セダン":"#43617e","スポーツカー":"#c0392b","高級車":"#8a6d1f","輸入車":"#7d4a8c","商用車":"#5d6d7e"};
+
+/* ---------- 整備メニュー ---------- */
+var JOBS = [
+ {id:"oil", nm:"オイル交換", cost:9000, days:1, fix:{mech:6}, desc:"基本メンテ。機関の調子を底上げ"},
+ {id:"clean", nm:"内装クリーニング＋消臭", cost:18000, days:1, fix:{int:22}, desc:"第一印象が大きく改善。商談に効く"},
+ {id:"ext", nm:"外装補修・磨き", cost:45000, days:2, fix:{ext:24}, desc:"小傷・凹み補修とボディ磨き"},
+ {id:"tire", nm:"タイヤ交換", cost:42000, days:1, fix:{mech:8}, desc:"残り溝不足を解消し安全性アップ"},
+ {id:"batt", nm:"バッテリー交換", cost:16000, days:1, fix:{mech:6}, desc:"始動不良リスクを低減"},
+ {id:"brake", nm:"ブレーキ整備", cost:38000, days:2, fix:{mech:14}, desc:"パッド・フルード交換で制動力を回復"},
+ {id:"susp", nm:"足回り整備", cost:55000, days:2, fix:{mech:16}, desc:"異音・ふらつきの改善"},
+ {id:"engine", nm:"エンジン・機関系整備", cost:85000, days:3, fix:{mech:26}, desc:"機関状態を本格回復。故障リスク低下"},
+ {id:"navi", nm:"ナビ・装備修理", cost:30000, days:1, fix:{int:8}, desc:"装備の不具合を修理し装備評価アップ"},
+ {id:"shaken", nm:"車検・法定点検", cost:95000, days:2, fix:{}, shaken:true, desc:"車検を2年延長。売れ行きが大きく改善"}
+];
+var QUALITY = [
+ {id:"cheap", nm:"格安（外注）", cm:0.6, em:0.7, desc:"標準の約6割の費用。効果は控えめ"},
+ {id:"std", nm:"標準", cm:1.0, em:1.0, desc:"バランスの取れた仕上がり"},
+ {id:"high", nm:"高品質（丁寧仕上げ）", cm:1.7, em:1.4, desc:"標準の約1.7倍の費用。状態・満足度・保証に効く"}
+];
+
+/* ---------- 顧客タイプ ---------- */
+var CUST_TYPES = [
+ {id:"price", nm:"価格重視の主婦", want:null, budget:[40,120], kmMax:120000, disc:0.9, desc:"とにかく安く。値引き交渉に強い"},
+ {id:"lowkm", nm:"低走行車マニア", want:null, budget:[80,350], kmMax:40000, disc:0.4, desc:"走行距離にこだわる"},
+ {id:"eco", nm:"燃費重視の通勤族", want:["ハイブリッドカー","コンパクトカー","軽自動車"], budget:[60,220], kmMax:100000, disc:0.5, desc:"燃費と維持費を気にする"},
+ {id:"family", nm:"子育てファミリー", want:["ミニバン","SUV"], budget:[120,380], kmMax:90000, disc:0.5, desc:"広さと安全装備を重視"},
+ {id:"lux", nm:"高級車志向の社長", want:["高級車","輸入車","セダン"], budget:[300,900], kmMax:60000, disc:0.2, desc:"ブランドと状態を重視。値引きには鈍感"},
+ {id:"sport", nm:"スポーツカー愛好家", want:["スポーツカー"], budget:[150,600], kmMax:80000, disc:0.3, desc:"機関状態と希少性を重視"},
+ {id:"collector", nm:"希少車コレクター", want:["スポーツカー","輸入車","セダン"], budget:[200,800], kmMax:100000, disc:0.1, desc:"珍しい車に弱い"},
+ {id:"first", nm:"初めての車購入・大学生", want:["軽自動車","コンパクトカー"], budget:[30,110], kmMax:110000, disc:0.7, desc:"予算は厳しめ。丁寧な接客に弱い"},
+ {id:"urgent", nm:"車が壊れて急ぎの人", want:null, budget:[50,250], kmMax:130000, disc:0.15, desc:"即決しやすい。多少高くても買う"},
+ {id:"biz", nm:"個人事業主", want:["商用車","軽自動車"], budget:[50,280], kmMax:150000, desc:"仕事用。実用性と価格のバランス"}
+];
+var CUST_NAMES = ["田中","佐藤","鈴木","高橋","渡辺","伊藤","山本","中村","小林","加藤","吉田","山田","佐々木","山口","松本","井上","木村","林","斎藤","清水","森","池田","橋本","阿部","石川","前田","藤田","後藤","岡田","長谷川"];
+
+/* ---------- 従業員 ---------- */
+var ROLES = [
+ {id:"sales", nm:"営業スタッフ", base:260000, desc:"来店客の成約率と接客品質に影響"},
+ {id:"mech", nm:"整備士", base:280000, desc:"整備の費用・品質・速度に影響"},
+ {id:"appr", nm:"査定スタッフ", base:250000, desc:"オークション落札精度と買取査定に影響"},
+ {id:"office", nm:"事務スタッフ", base:220000, desc:"固定費の無駄を削減し事務処理を改善"},
+ {id:"mgr", nm:"店長", base:380000, desc:"店舗全体の効率と評判に影響"}
+];
+var STAFF_NAMES = ["青木 駿","石井 美咲","上田 健太","江口 さくら","大野 翔太","葛西 玲奈","木下 大輔","久保 陽子","近藤 亮","坂本 葵","島田 拓也","杉山 恵","瀬戸 直人","高木 千尋","田村 康平","千葉 真由","辻 慎吾","中島 彩香","西村 颯","野口 結衣","長谷部 蓮","浜田 茜","藤井 悠真","松井 ほのか","三浦 和樹","村上 奈々","森田 光","安田 蒼","山崎 梨乃","横山 大地"];
+
+/* ---------- 設備 ---------- */
+var FACILITIES = [
+ {id:"lot", nm:"展示場拡張", max:3, cost:[900000,1600000,2600000], desc:"在庫上限 +8台／段階", eff:"在庫上限アップ"},
+ {id:"workshop", nm:"自社整備工場", max:1, cost:[3500000], desc:"整備費30%オフ・整備品質アップ", eff:"整備コスト削減"},
+ {id:"studio", nm:"洗車・撮影スペース", max:1, cost:[800000], desc:"掲載写真の質が上がり販売価格・速度アップ", eff:"販売力アップ"},
+ {id:"yard", nm:"車両保管ヤード", max:1, cost:[1200000], desc:"在庫上限 +6台・保管費が半額", eff:"保管コスト削減"},
+ {id:"lounge", nm:"商談スペース改装", max:1, cost:[600000], desc:"商談の成約率アップ", eff:"成約率アップ"},
+ {id:"showroom", nm:"大型ショールーム", max:1, cost:[6000000], desc:"評判＋・高級車／輸入車の需要アップ", eff:"ブランド強化"},
+ {id:"store2", nm:"第2店舗（都市部）", max:1, cost:[9000000], desc:"在庫上限 +15台・来店増。家賃は月25万円増", eff:"規模拡大"}
+];
+
+/* ---------- 広告プラン ---------- */
+var AD_PLANS = [
+ {id:0, nm:"広告なし", cost:0, mult:0.55, desc:"口コミと通りがかりのみ"},
+ {id:1, nm:"中古車情報サイト掲載", cost:2500, mult:1.0, desc:"基本の集客。1日あたり費用"},
+ {id:2, nm:"サイト＋自社Web・SNS", cost:6000, mult:1.45, desc:"反響が増える"},
+ {id:3, nm:"サイト＋SNS＋チラシ全開", cost:12000, mult:1.9, desc:"来店が大幅増。費用も大きい"}
+];
+
+/* ---------- 地域・方針・難易度 ---------- */
+var REGIONS = [
+ {id:"local", nm:"地方都市", rent:180000, dem:1.0, desc:"家賃が安く堅実に経営できる"},
+ {id:"city", nm:"政令指定都市", rent:350000, dem:1.35, desc:"家賃は高いが来店が多い"},
+ {id:"metro", nm:"大都市圏", rent:600000, dem:1.6, lux:1.3, desc:"高級車・輸入車の需要が強い"},
+ {id:"suburb", nm:"郊外ベッドタウン", rent:230000, dem:1.1, fam:1.3, desc:"ミニバン・ファミリー層に強い"}
+];
+var SPECIALTIES = [
+ {id:"all", nm:"総合中古車店", desc:"バランス型。すべての車種が対象", cat:null, bonus:1.0},
+ {id:"cheap", nm:"軽・低価格専門", desc:"軽自動車・コンパクトの需要＋25%", cat:["軽自動車","コンパクトカー"], bonus:1.25},
+ {id:"lux", nm:"高級・輸入専門", desc:"高級車・輸入車の需要＋25%", cat:["高級車","輸入車"], bonus:1.25},
+ {id:"sport", nm:"スポーツ・希少車専門", desc:"スポーツカーの需要＋30%", cat:["スポーツカー"], bonus:1.3},
+ {id:"family", nm:"ミニバン・ファミリー専門", desc:"ミニバン・SUVの需要＋25%", cat:["ミニバン","SUV"], bonus:1.25},
+ {id:"work", nm:"商用車専門", desc:"商用車・軽の需要＋25%", cat:["商用車","軽自動車"], bonus:1.25}
+];
+var DIFFS = [
+ {id:"easy", nm:"イージー", cash:15000000, costMult:0.9, demMult:1.2, desc:"資金に余裕あり。まず経営を覚えたい人向け"},
+ {id:"normal", nm:"ノーマル", cash:10000000, costMult:1.0, demMult:1.0, desc:"標準的な収益性とリスク"},
+ {id:"hard", nm:"ハード", cash:7000000, costMult:1.12, demMult:0.85, desc:"競争が激しく資金繰りが厳しい"}
+];
+
+/* ---------- 実績 ---------- */
+var ACHIEVEMENTS = [
+ {id:"first_sale", nm:"初成約", desc:"初めて車を1台売る", ic:"🎉"},
+ {id:"sales10", nm:"販売台数10台", desc:"累計販売台数10台に到達", ic:"🔟"},
+ {id:"sales50", nm:"販売台数50台", desc:"累計販売台数50台に到達", ic:"🏅"},
+ {id:"sales150", nm:"販売台数150台", desc:"累計販売台数150台に到達", ic:"👑"},
+ {id:"profit10m", nm:"累計利益1,000万円", desc:"累積営業利益が1,000万円を超える", ic:"💰"},
+ {id:"stock20", nm:"在庫20台", desc:"在庫が20台に到達", ic:"🚗"},
+ {id:"rep80", nm:"評判80", desc:"店舗の評判が80に到達", ic:"⭐"},
+ {id:"auction1", nm:"オークション初落札", desc:"業者オークションで初めて落札", ic:"🔨"},
+ {id:"rare_sale", nm:"希少車ハンター", desc:"希少性4以上の車を販売", ic:"💎"},
+ {id:"lux_sale", nm:"高額成約", desc:"500万円以上の車を販売", ic:"✨"},
+ {id:"buyback1", nm:"買取成立", desc:"一般客からの買取を成立させる", ic:"🤝"},
+ {id:"tradein1", nm:"下取り獲得", desc:"商談で下取りを獲得する", ic:"🔄"},
+ {id:"store2", nm:"2店舗経営", desc:"第2店舗を開設する", ic:"🏢"},
+ {id:"net50m", nm:"資産5,000万円", desc:"総資産（現金＋在庫−借入）が5,000万円を超える", ic:"🏦"},
+ {id:"net100m", nm:"中古車王", desc:"総資産1億円に到達", ic:"👑"}
+];
+
+/* ---------- 車両生成 ---------- */
+var _carSeq = 1;
+function genCar(modelIdx, opts){
+  opts = opts || {};
+  var m = MODELS[modelIdx];
+  var curYear = 2026;
+  var age = opts.age!=null ? opts.age : Math.round(clamp(rnd(1,13) + (m.rare>=4? rnd(0,5):0), 1, 18));
+  var year = curYear - age;
+  var km = opts.km!=null ? opts.km : Math.round(clamp(age * rnd(6000,13000) * rnd(0.5,1.25), 3000, 260000) / 100 * 100);
+  var baseCond = clamp(88 - age*3.4 - km/9000 + rnd(-8,10), 25, 98);
+  var car = {
+    id: uid("car"), seq: _carSeq++, mi: modelIdx,
+    mk: m.mk, nm: m.nm, cat: m.cat, body: m.body || m.cat, grade: pick(m.gr),
+    year: year, km: km, color: pick(COLORS),
+    equip: [], ext: Math.round(clamp(baseCond + rnd(-10,8), 15, 99)),
+    int: Math.round(clamp(baseCond + rnd(-10,10), 15, 99)),
+    mech: Math.round(clamp(baseCond + rnd(-12,6), 15, 99)),
+    repair: Math.random() < clamp(0.06 + age*0.012, 0, 0.3),
+    inspect: ri(0, 24), fuel: m.fuel, pop: m.pop, rare: m.rare, br: m.br,
+    cost: 0, serviceCost: 0, askPrice: 0, days: 0, status: "stock",
+    hidden: Math.random() < 0.16 ? rnd(0.3, 1) : 0,
+    quality: 0.5, via: opts.via || "仕入", boughtDay: G ? G.day : 1,
+    serviceQueue: []
+  };
+  var ne = ri(2,5), pool = EQUIP.slice();
+  for (var i=0;i<ne;i++){ var j = Math.floor(Math.random()*pool.length); car.equip.push(pool.splice(j,1)[0]); }
+  car.baseAtBuy = carValue(car, true);
+  return car;
+}
+function modelByName(nm){ for (var i=0;i<MODELS.length;i++) if (MODELS[i].nm===nm) return i; return 0; }
+function bodyOf(c){ if (!c) return ""; if (c.body) return c.body; var m = MODELS[c.mi]; return (m && m.body) || c.cat || ""; }
+function fmtPrice(n){ // 整備費など小額は円単位まで正確に表示（万円丸めで同額に見える問題の対策）
+  n = Math.round(n);
+  if (Math.abs(n) < 100000) return n.toLocaleString("ja-JP") + "円";
+  return man(n);
+}
+
+/* 個体の相場（円）。ignoreMarket=trueで市場指数を除く */
+function carValue(car, ignoreMarket){
+  var m = MODELS[car.mi];
+  var age = 2026 - car.year;
+  var ageF = Math.max(0.07, Math.pow(0.865, age));
+  var mileF = clamp(1 - (car.km/10000) * 0.038, 0.42, 1.03);
+  var condF = 0.72 + ((car.ext + car.int + car.mech)/3) / 100 * 0.42;
+  var repF = car.repair ? 0.8 : 1.0;
+  var inspF = 0.94 + clamp(car.inspect,0,24)/24 * 0.09;
+  var popF = 0.88 + car.pop * 0.045 + car.rare * 0.02;
+  var idx = ignoreMarket ? 1 : (G ? G.market[car.cat] : 1);
+  var seas = ignoreMarket ? 1 : (G ? seasonFactor(car.cat) : 1);
+  var v = m.np * 10000 * ageF * mileF * condF * repF * inspF * popF * idx * seas;
+  return Math.max(20000, Math.round(v/1000)*1000);
+}
+function seasonFactor(cat){
+  if (!G) return 1;
+  var dt = new Date(2026,3,1); dt.setDate(dt.getDate()+G.day-1);
+  var month = dt.getMonth()+1;
+  var f = 1;
+  if (month>=2 && month<=4) f += (cat==="軽自動車"||cat==="コンパクトカー"||cat==="ミニバン") ? 0.05 : 0.01;
+  if (month>=11 || month===12) f += (cat==="SUV") ? 0.04 : 0;
+  if (month>=6 && month<=8) f += (cat==="スポーツカー") ? 0.03 : 0;
+  return f;
+}
+function activeClaims(){ return G ? G.claims.filter(function(c){ return c.active && !c.resolved; }) : []; }
+function openClaimConfirm(){
+  var n = activeClaims().length;
+  openModal('<h3>⚠️ 未対応のクレームがあります</h3>' +
+    '<p>未対応のクレームが <b>' + n + '件</b> あります。放置すると評判に響くかもしれません。先に対応しますか？</p>' +
+    '<div class="grid g2" style="margin-top:12px">' +
+    '<button class="btn pri" data-act="claim-goto">クレーム対応へ進む</button>' +
+    '<button class="btn dgr" data-act="claim-proceed">それでも次の日へ進む（自己責任）</button>' +
+    '<button class="btn" data-act="close-modal">キャンセル</button></div>');
+}
+function gotoClaims(){
+  closeModal(); UI.view = "dash"; render();
+  setTimeout(function(){ var el = document.getElementById("claims-anchor"); if (el) el.scrollIntoView({ behavior:"smooth", block:"start" }); }, 60);
+}
+function faultRisk(car){
+  var condBad = (100 - Math.min(car.mech, car.ext)) / 100;
+  return clamp(0.03 + condBad*0.34 + car.hidden*0.3 + (2026-car.year)*0.006 - car.quality*0.05, 0.01, 0.75);
+}
+function suggestPrice(car){
+  var v = carValue(car);
+  var total = car.cost + car.serviceCost;
+  return Math.max(Math.round(v*1.02/1000)*1000, Math.round(total*1.15/1000)*1000);
+}
+function stockCap(){
+  if (!G) return 10;
+  return 10 + (G.fac.lot||0)*8 + (G.fac.yard?6:0) + (G.fac.store2?15:0);
+}
+function netWorth(){ return G.cash + G.inventory.reduce(function(s,c){ return s + carValue(c)*0.92; },0) - G.loan; }
+function rankName(nw){
+  if (nw >= 100000000) return "中古車王";
+  if (nw >= 60000000) return "中古車王への挑戦者";
+  if (nw >= 30000000) return "県内有力店";
+  if (nw >= 15000000) return "地域の人気店";
+  return "駆け出しの中古車店";
+}
+
+/* ---------- ゲーム状態 ---------- */
+var G = null;
+var UI = { view:"dash", carId:null, sortStock:"days", negoId:null, started:false };
+
+function newFin(){ return { sales:0, cogs:0, service:0, ads:0, transport:0, warranty:0, fixed:0, interest:0, fees:0 }; }
+function newGame(cfg){
+  _uid = 1; _carSeq = 1;
+  var diff = DIFFS[cfg.diff], region = REGIONS[cfg.region], spec = SPECIALTIES[cfg.spec];
+  G = {
+    ver: SAVE_VER, started: true,
+    shopName: cfg.name || "モータースさくら",
+    diff: cfg.diff, region: cfg.region, spec: cfg.spec,
+    day: 1, cash: diff.cash, loan: 0,
+    rep: 50, adPlan: 1,
+    inventory: [], sold: [], customers: [], staff: [], candidates: [],
+    fac: { lot:0, workshop:0, studio:0, yard:0, lounge:0, showroom:0, store2:0 },
+    market: {}, fuel: 172, economy: 1.0,
+    fin: newFin(), finTotal: newFin(), monthHist: [],
+    news: [], ach: {}, stats: { soldCount:0, boughtCount:0, claims:0, negoWin:0, negoLose:0, tradeins:0, buybacks:0, auctions:0 },
+    auction: [], buyOffers: [], dealerCars: [], visitors: [],
+    claims: [], buffs: { visitorDays:0, visitorMult:1 },
+    dealerTrust: 0, monthReport: null, gameOver: false,
+    goal30done: false, tutorial: { buy:false, service:false, price:false, sale:false },
+    lastMonthKey: monthKey(1)
+  };
+  CATS.forEach(function(c){ G.market[c] = rnd(0.97, 1.03); });
+  G.staff.push(mkStaff("sales", 55), mkStaff("mech", 52), mkStaff("office", 48));
+  refreshCandidates();
+  var starters = [modelByName("フィット"), modelByName("ヴォクシー"), modelByName("N-BOX")];
+  if (spec.cat){
+    var pool = MODELS.filter(function(m){ return spec.cat.indexOf(m.cat)>=0; });
+    starters[2] = modelByName(pick(pool).nm);
+  }
+  starters.forEach(function(mi){
+    var c = genCar(mi, { via:"開店時の仕入" });
+    c.cost = Math.round(carValue(c, true) * rnd(0.68, 0.78) / 1000) * 1000;
+    c.askPrice = suggestPrice(c);
+    G.inventory.push(c); G.stats.boughtCount++;
+  });
+  refreshMarket(true);
+  addNews("開店", "「" + G.shopName + "」が" + region.nm + "にオープン。初期資金 " + man(diff.cash) + "、在庫3台からのスタート。最初の30日間を黒字で乗り切るのが当面の目標だ。");
+  UI.view = "dash"; UI.started = true;
+  saveGame(); render();
+}
+var CAREERS = {
+  sales: [
+    { nm:"大手新車ディーラーで営業{years}年", tier:2 }, { nm:"同業の中古車販売店で営業{years}年", tier:2 },
+    { nm:"カー用品店で接客・販売{years}年", tier:1 }, { nm:"携帯ショップなど接客業{years}年", tier:1 },
+    { nm:"保険代理店で営業{years}年", tier:1 }, { nm:"新卒・未経験（自動車業界は初めて）", tier:0 }, { nm:"異業種から転職・未経験", tier:0 }
+  ],
+  mech: [
+    { nm:"大手ディーラーの整備士{years}年", tier:2 }, { nm:"民間整備工場で整備士{years}年", tier:2 },
+    { nm:"カー用品店のピットスタッフ{years}年", tier:1 }, { nm:"ガソリンスタンド勤務{years}年", tier:1 },
+    { nm:"自動車整備学校を卒業したて・未経験", tier:0 }, { nm:"趣味で整備経験あり・未経験", tier:0 }
+  ],
+  appr: [
+    { nm:"大手買取専門店で査定士{years}年", tier:2 }, { nm:"同業の中古車店で査定・仕入{years}年", tier:2 },
+    { nm:"オークション会場の下見代行{years}年", tier:1 }, { nm:"新車ディーラーで下取り査定{years}年", tier:1 },
+    { nm:"車好きが高じて転職・未経験", tier:0 }, { nm:"新卒・未経験", tier:0 }
+  ],
+  office: [
+    { nm:"自動車販売店の事務{years}年", tier:2 }, { nm:"一般企業の経理・総務{years}年", tier:1 },
+    { nm:"コールセンター勤務{years}年", tier:1 }, { nm:"新卒・未経験", tier:0 }
+  ],
+  mgr: [
+    { nm:"同業の中古車店で店長{years}年", tier:2 }, { nm:"新車ディーラーの営業所長{years}年", tier:2 },
+    { nm:"自店で営業リーダーを経験", tier:1 }, { nm:"小売店の店長経験{years}年", tier:1 }
+  ]
+};
+function careerFor(role, tier, years){
+  var pool = (CAREERS[role] || CAREERS.sales).filter(function(c){ return c.tier === tier; });
+  if (!pool.length) pool = CAREERS[role] || CAREERS.sales;
+  var c = pick(pool);
+  return c.nm.replace("{years}", years);
+}
+function mkStaff(role, skill){
+  var r = ROLES.filter(function(x){ return x.id===role; })[0];
+  var roll = Math.random();
+  var tier = skill != null ? (skill >= 65 ? 2 : skill >= 48 ? 1 : 0) : (roll < 0.3 ? 2 : roll < 0.72 ? 1 : 0);
+  var sk = skill != null ? skill : (tier === 2 ? ri(64, 88) : tier === 1 ? ri(46, 68) : ri(28, 48));
+  var years = tier === 2 ? ri(6, 18) : tier === 1 ? ri(2, 8) : ri(0, 1);
+  var salMult = (tier === 2 ? rnd(1.12, 1.3) : tier === 1 ? rnd(0.95, 1.1) : rnd(0.78, 0.92));
+  return { id: uid("st"), name: pick(STAFF_NAMES), role: role, skill: sk,
+    salary: Math.round(r.base * salMult / 1000) * 1000, fatigue: ri(0, 20), years: years,
+    career: careerFor(role, tier, years), tier: tier,
+    tierLabel: tier === 2 ? "即戦力" : tier === 1 ? "経験者" : "未経験・伸びしろ",
+    record: { sold: 0, serviced: 0, bought: 0 } };
+}
+function ensureCareers(){
+  if (!G) return;
+  var fix = function(s){
+    if (!s.record) s.record = { sold: 0, serviced: 0, bought: 0 };
+    if (s.career) return;
+    var tier = s.skill >= 65 ? 2 : s.skill >= 48 ? 1 : 0;
+    s.tier = tier; s.tierLabel = tier === 2 ? "即戦力" : tier === 1 ? "経験者" : "未経験・伸びしろ";
+    if (!s.years) s.years = tier === 2 ? ri(6, 15) : tier === 1 ? ri(2, 7) : ri(0, 1);
+    s.career = careerFor(s.role, tier, s.years);
+  };
+  (G.staff || []).forEach(fix);
+  (G.candidates || []).forEach(fix);
+}
+function creditStaff(role, key){
+  var list = G.staff.filter(function(s){ return s.role === role; });
+  list.forEach(function(s){ if (s.tier < 2 && Math.random() < 0.25) s.skill = Math.min(92, s.skill + 1); });
+  if (!list.length) return;
+  var best = list.reduce(function(a, b){ return (b.skill > a.skill) ? b : a; });
+  if (!best.record) best.record = { sold: 0, serviced: 0, bought: 0 };
+  best.record[key]++;
+}
+function refreshCandidates(){
+  if (!G) return;
+  G.candidates = [];
+  for (var i=0;i<4;i++){ G.candidates.push(mkStaff(pick(ROLES).id)); }
+}
+function staffSkill(role){
+  var list = G.staff.filter(function(s){ return s.role===role; });
+  if (!list.length) return 0;
+  return Math.max.apply(null, list.map(function(s){ return s.skill; })) + (list.length-1)*4;
+}
+function monthlyFixed(){
+  var region = REGIONS[G.region];
+  var rent = region.rent + (G.fac.store2 ? 250000 : 0) + (G.fac.showroom ? 60000 : 0);
+  var util = Math.round(region.rent * 0.12 + G.inventory.length * 1200);
+  var sal = G.staff.reduce(function(s,x){ return s + x.salary; }, 0);
+  return { rent: rent, util: util, sal: sal, total: rent + util + sal };
+}
+
+/* ---------- セーブ / ロード ---------- */
+function saveGame(){
+  if (!G || !G.started) return;
+  try {
+    var copy = JSON.parse(JSON.stringify(G));
+    copy._uid = _uid; copy._carSeq = _carSeq;
+    localStorage.setItem(SAVE_KEY, JSON.stringify(copy));
+  } catch(e){ /* 保存失敗時もゲームは継続 */ }
+}
+function loadSave(){
+  try {
+    var raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    var d = JSON.parse(raw);
+    if (!d || d.ver !== SAVE_VER || !d.started) return null;
+    _uid = d._uid || 1000; _carSeq = d._carSeq || 1000;
+    delete d._uid; delete d._carSeq;
+    return d;
+  } catch(e){ return null; }
+}
+function hasSave(){ try { return !!localStorage.getItem(SAVE_KEY); } catch(e){ return false; } }
+function wipeSave(){ try { localStorage.removeItem(SAVE_KEY); } catch(e){} }
+
+function addNews(title, body, kind){
+  G.news.unshift({ day: G.day, date: dateStr(G.day), title: title, body: body, kind: kind || "info" });
+  if (G.news.length > 120) G.news.length = 120;
+}
+function addFin(key, amt){ G.fin[key] += amt; G.finTotal[key] += amt; }
+function unlock(id){
+  if (G.ach[id]) return;
+  var a = ACHIEVEMENTS.filter(function(x){ return x.id===id; })[0];
+  if (!a) return;
+  G.ach[id] = G.day;
+  toast("🏆 実績解除：" + a.nm);
+  addNews("実績解除", a.ic + " 「" + a.nm + "」を達成した。", "good");
+}
+function checkAch(){
+  var s = G.stats;
+  if (s.soldCount >= 1) unlock("first_sale");
+  if (s.soldCount >= 10) unlock("sales10");
+  if (s.soldCount >= 50) unlock("sales50");
+  if (s.soldCount >= 150) unlock("sales150");
+  if (G.finTotal.sales - G.finTotal.cogs - G.finTotal.service - G.finTotal.fixed > 10000000) unlock("profit10m");
+  if (G.inventory.length >= 20) unlock("stock20");
+  if (G.rep >= 80) unlock("rep80");
+  if (G.fac.store2) unlock("store2");
+  var nw = netWorth();
+  if (nw >= 50000000) unlock("net50m");
+  if (nw >= 100000000) unlock("net100m");
+}
+
+/* ---------- 相場リフレッシュ ---------- */
+function refreshMarket(first){
+  G.auction = [];
+  for (var i=0;i<6;i++){
+    var mi = Math.floor(Math.random()*MODELS.length);
+    var c = genCar(mi, { via:"オークション" });
+    var expected = Math.round(carValue(c, true) * rnd(0.76, 0.9) / 1000) * 1000;
+    G.auction.push({ car: c, expected: expected, start: Math.round(expected * rnd(0.55, 0.75) / 1000)*1000, rivals: ri(1, 5), bid: 0, done:false });
+  }
+  G.buyOffers = [];
+  for (var j=0;j<3;j++){
+    var mi2 = Math.floor(Math.random()*MODELS.length);
+    var c2 = genCar(mi2, { via:"買取" });
+    var hope = Math.round(carValue(c2, true) * rnd(0.82, 0.98) / 1000) * 1000;
+    G.buyOffers.push({ car: c2, hope: hope, done:false });
+  }
+  G.dealerCars = [];
+  var dealers = ["カーディーラー山田","オートガレージK","中古車センター北日本","モータース佐川","カーランド東海"];
+  for (var k=0;k<4;k++){
+    var mi3 = Math.floor(Math.random()*MODELS.length);
+    var c3 = genCar(mi3, { via:"業者間取引" });
+    var dp = Math.round(carValue(c3, true) * rnd(0.86, 0.96) * (1 - Math.min(0.08, G.dealerTrust*0.004)) / 1000) * 1000;
+    G.dealerCars.push({ car: c3, price: dp, dealer: pick(dealers), done:false });
+  }
+  if (!first) addNews("市場更新", "オークション出品・買取申込・業者間オファーが更新された。", "info");
+}
+/* ---------- 仕入れ共通 ---------- */
+function findCar(id){ for (var i=0;i<G.inventory.length;i++) if (G.inventory[i].id===id) return G.inventory[i]; return null; }
+function buyCar(car, price, via, extraFee){
+  if (G.inventory.length >= stockCap()){ toast("在庫上限（" + stockCap() + "台）に達しています。展示場拡張が必要です"); return false; }
+  var total = price + (extraFee||0);
+  if (G.cash < total){ toast("資金が不足しています（必要 " + man(total) + "）"); return false; }
+  G.cash -= total;
+  if (extraFee) addFin("transport", extraFee);
+  car.cost = price; car.via = via; car.boughtDay = G.day; car.days = 0; car.status = "stock";
+  car.askPrice = suggestPrice(car);
+  G.inventory.push(car);
+  G.stats.boughtCount++;
+  G.tutorial.buy = true;
+  checkAch();
+  return true;
+}
+
+/* ---------- オークション ---------- */
+function bidAuction(idx, bid){
+  var lot = G.auction[idx];
+  if (!lot || lot.done) return;
+  if (G.inventory.length >= stockCap()){ toast("在庫上限に達しています"); return; }
+  var appr = staffSkill("appr");
+  var truePrice = lot.expected * rnd(0.96, 1.08) * (1 + lot.rivals * 0.02);
+  var p = clamp(0.1 + (bid / truePrice - 0.78) * 2.2 + appr * 0.0015, 0.03, 0.95);
+  lot.done = true;
+  if (Math.random() < p){
+    var fee = Math.round(bid * 0.03 / 1000) * 1000 + 15000; // 手数料3%＋輸送費
+    var car = lot.car;
+    if (buyCar(car, bid, "オークション", fee)){
+      creditStaff("appr", "bought");
+      G.stats.auctions++; unlock("auction1"); G.dealerTrust += 0;
+      var msg = "🔨 落札！ " + car.mk + " " + car.nm + " を " + man(bid) + " で落札（手数料・陸送費 " + man(fee) + "）。";
+      if (car.hidden > 0.55) msg += " ただし機関に気になる音がある…納車後チェックで不具合が見つかるかもしれない。";
+      else if (car.hidden > 0) msg += " 大きな問題はなさそうだ。";
+      toast("落札しました：" + car.nm);
+      addNews("オークション落札", msg, "good");
+    } else { lot.done = false; }
+  } else {
+    toast("落札できませんでした（競合の入札が上回りました）");
+    addNews("オークション落選", car_.nameOf(lot.car) + " への入札 " + man(bid) + " は競合に競り負けた。落札目安は " + man(truePrice) + " 前後だったようだ。", "bad");
+  }
+  saveGame(); render();
+}
+var car_ = { nameOf: function(c){ return c.mk + " " + c.nm + "（" + c.year + "年）"; } };
+
+/* ---------- 買取 ---------- */
+function doBuyback(idx, offer){
+  var o = G.buyOffers[idx];
+  if (!o || o.done) return;
+  var fair = carValue(o.car, true) * 0.88;
+  var p = clamp(0.08 + (offer / fair - 0.6) * 2.1, 0.02, 0.97);
+  o.done = true;
+  if (Math.random() < p){
+    if (buyCar(o.car, offer, "買取", 0)){
+      G.stats.buybacks++; unlock("buyback1");
+      toast("買取成立：" + o.car.nm + " を " + man(offer) + " で買取");
+      addNews("買取成立", car_.nameOf(o.car) + " を " + man(offer) + " で買い取った。希望額は " + man(o.hope) + " だった。", "good");
+    } else o.done = false;
+  } else {
+    toast("買取交渉は決裂しました");
+    addNews("買取決裂", car_.nameOf(o.car) + " の買取交渉が決裂。提示 " + man(offer) + " に対し、売主の希望は " + man(o.hope) + " 前後だった。", "bad");
+  }
+  saveGame(); render();
+}
+
+/* ---------- 業者間取引 ---------- */
+function doDealerBuy(idx){
+  var d = G.dealerCars[idx];
+  if (!d || d.done) return;
+  d.done = true;
+  if (buyCar(d.car, d.price, "業者間取引", 10000)){
+    G.dealerTrust++;
+    toast(d.dealer + " から " + d.car.nm + " を仕入れました");
+    addNews("業者間仕入", d.dealer + " から " + car_.nameOf(d.car) + " を " + man(d.price) + " で仕入れた。取引実績が信頼につながる。", "good");
+  } else d.done = false;
+  saveGame(); render();
+}
+function doDealerSell(carId){
+  var car = findCar(carId);
+  if (!car || car.status !== "stock") return;
+  var price = Math.round(carValue(car) * 0.68 / 1000) * 1000;
+  G.cash += price;
+  addFin("sales", price); addFin("cogs", car.cost + car.serviceCost);
+  G.dealerTrust++;
+  G.inventory = G.inventory.filter(function(c){ return c.id !== carId; });
+  G.stats.soldCount++;
+  addNews("業者へ売却", car_.nameOf(car) + " を業者オークション流れで " + man(price) + " に売却。在庫を現金化した。", "info");
+  toast("業者売却：" + man(price) + " で現金化");
+  checkAch(); saveGame(); render();
+}
+
+/* ---------- 整備 ---------- */
+function jobCost(car, job, q){
+  var mult = 1 + Math.max(0, (carValue(car, true) - 500000)) / 4000000; // 高額車は部品代増
+  var base = job.cost * mult * q.cm * DIFFS[G.diff].costMult;
+  if (G.fac.workshop) base *= 0.7;
+  base *= 1 - Math.min(0.15, staffSkill("mech") * 0.0012);
+  return Math.round(base / 100) * 100;
+}
+function orderService(carId, jobId, qIdx){
+  var car = findCar(carId);
+  if (!car || car.status !== "stock") return;
+  var job = JOBS.filter(function(j){ return j.id===jobId; })[0];
+  var q = QUALITY[qIdx];
+  var cost = jobCost(car, job, q);
+  if (G.cash < cost){ toast("資金不足で整備を発注できません"); return; }
+  G.cash -= cost; addFin("service", cost);
+  car.serviceCost += cost;
+  car.status = "service";
+  car.serviceQueue.push({ job: jobId, q: qIdx, left: Math.max(1, Math.round(job.days * (G.fac.workshop ? 0.8 : 1))), cost: cost });
+  G.tutorial.service = true;
+  toast("整備を発注：" + job.nm + "（" + man(cost) + "）");
+  saveGame(); render();
+}
+function applyService(car, sq){
+  var job = JOBS.filter(function(j){ return j.id===sq.job; })[0];
+  var q = QUALITY[sq.q];
+  var eff = q.em * (G.fac.workshop ? 1.12 : 1) * (1 + staffSkill("mech") * 0.002);
+  for (var k in job.fix){
+    car[k] = Math.round(clamp(car[k] + job.fix[k] * eff, 1, 99));
+  }
+  if (job.shaken) car.inspect = 24;
+  if (sq.job === "engine" || sq.job === "oil" || sq.job === "brake") car.hidden = Math.max(0, car.hidden - 0.35 * eff);
+  creditStaff("mech", "serviced");
+  car.quality = clamp(car.quality + (sq.q === 2 ? 0.22 : sq.q === 1 ? 0.1 : 0.02), 0, 1.2);
+  car.askPrice = Math.max(car.askPrice, suggestPrice(car));
+  addNews("整備完了", car_.nameOf(car) + " の「" + job.nm + "」が完了。状態が改善した。", "good");
+}
+
+/* ---------- 価格設定 ---------- */
+function setPrice(carId, price){
+  var car = findCar(carId);
+  if (!car) return;
+  car.askPrice = clamp(Math.round(price/1000)*1000, 10000, 99990000);
+  G.tutorial.price = true;
+  saveGame(); render();
+}
+
+/* ---------- 来店客 ---------- */
+function genVisitors(){
+  var region = REGIONS[G.region], diff = DIFFS[G.diff], spec = SPECIALTIES[G.spec];
+  var ad = AD_PLANS[G.adPlan];
+  var base = 1.55 * region.dem * ad.mult * diff.demMult * (0.75 + G.rep/100) ;
+  if (G.fac.showroom) base *= 1.15;
+  if (G.fac.store2) base *= 1.3;
+  if (G.buffs.visitorDays > 0) base *= G.buffs.visitorMult;
+  var dow = (function(){ var dt=new Date(2026,3,1); dt.setDate(dt.getDate()+G.day-1); return dt.getDay(); })();
+  if (dow === 0 || dow === 6) base *= 1.45;
+  base *= G.economy;
+  var n = Math.max(0, Math.round(base + rnd(-1, 1.4)));
+  n = Math.min(n, 6);
+  G.visitors = [];
+  for (var i=0;i<n;i++){
+    var t = pick(CUST_TYPES);
+    var budget = Math.round(rnd(t.budget[0], t.budget[1]) * 10000 / 1000) * 1000;
+    var wantCat = t.want ? pick(t.want) : null;
+    if (spec.cat && Math.random() < 0.3) wantCat = pick(spec.cat);
+    if (region.lux && Math.random() < 0.2) wantCat = pick(["高級車","輸入車"]);
+    if (region.fam && Math.random() < 0.2) wantCat = pick(["ミニバン","SUV"]);
+    G.visitors.push({
+      id: uid("vis"), name: pick(CUST_NAMES) + "さん", type: t.nm, typeId: t.id,
+      budget: budget, wantCat: wantCat, kmMax: t.kmMax, disc: t.disc, desc: t.desc,
+      carId: null, patience: 1
+    });
+  }
+  // 各来店客が最も興味を持つ在庫車を選ぶ
+  G.visitors.forEach(function(v){
+    var best = null, bs = -1;
+    G.inventory.forEach(function(c){
+      if (c.status !== "stock") return;
+      var s = fitScore(v, c);
+      if (s > bs){ bs = s; best = c; }
+    });
+    v.carId = best && bs > 18 ? best.id : null;
+  });
+}
+function fitScore(v, car){
+  var s = 26;
+  if (v.wantCat && car.cat === v.wantCat) s += 26; else if (v.wantCat) s -= 8;
+  if (car.askPrice <= v.budget) s += 16; else s -= clamp((car.askPrice - v.budget)/v.budget * 60, 0, 34);
+  if (car.km <= v.kmMax) s += 10; else s -= 8;
+  s += (car.ext + car.int + car.mech)/3 * 0.16;
+  s += car.pop * 1.6 + car.rare * (v.typeId === "collector" ? 4 : 0.8);
+  if (v.typeId === "eco") s += (car.fuel - 12) * 0.9;
+  if (v.typeId === "sport") s += car.mech * 0.18;
+  if (v.typeId === "lux") s += car.br * 3;
+  var spec = SPECIALTIES[G.spec];
+  if (spec.cat && spec.cat.indexOf(car.cat) >= 0) s += 6;
+  return s;
+}
+
+/* ---------- 商談 ---------- */
+function negoChance(v, car, price){
+  var fit = fitScore(v, car);
+  var val = carValue(car);
+  var priceRatio = price / Math.max(val, 1);
+  var p = fit * 0.8 - (priceRatio - 1) * 120 + (G.rep - 50) * 0.18 + staffSkill("sales") * 0.14 + (G.fac.lounge ? 6 : 0);
+  if (price <= v.budget) p += 8; else p -= 14;
+  return clamp(Math.round(p), 2, 96);
+}
+function resolveNego(vId, action){
+  var v = null;
+  G.visitors.forEach(function(x){ if (x.id === vId) v = x; });
+  if (!v) return;
+  var car = findCar(v.carId);
+  if (!car){ toast("その車両はすでに売却済みです"); G.visitors = G.visitors.filter(function(x){ return x.id !== vId; }); render(); return; }
+  var price = car.askPrice, extraRev = 0, extraCost = 0, tradeCar = null, label = "";
+  if (action === "disc5"){ price = Math.round(price * 0.95 / 1000) * 1000; label = "5%値引き"; }
+  if (action === "disc10"){ price = Math.round(price * 0.90 / 1000) * 1000; label = "10%値引き"; }
+  if (action === "option"){ price += 60000; extraRev = 60000; extraCost = 24000; label = "オプション付帯（コーティング＋用品）"; }
+  if (action === "tradein"){
+    var mi = Math.floor(Math.random()*MODELS.length);
+    tradeCar = genCar(mi, { via:"下取り" });
+    var tv = Math.round(carValue(tradeCar, true) * rnd(0.8, 0.95) / 1000) * 1000;
+    tradeCar._tradeValue = tv;
+    price = car.askPrice; label = "下取り提案（下取り額 " + man(tv) + "）";
+  }
+  var p = negoChance(v, car, price) + (action === "disc5" ? 10 : action === "disc10" ? 20 : action === "tradein" ? 12 : action === "option" ? 5 : 0);
+  p = clamp(p, 2, 97);
+  var win = Math.random() * 100 < p;
+  closeModal();
+  if (win){
+    var cashIn = price;
+    if (tradeCar){
+      cashIn = Math.max(0, price - tradeCar._tradeValue);
+      tradeCar.cost = tradeCar._tradeValue; delete tradeCar._tradeValue;
+      tradeCar.askPrice = suggestPrice(tradeCar); tradeCar.boughtDay = G.day;
+      if (G.inventory.length < stockCap() + 1) G.inventory.push(tradeCar);
+      G.stats.tradeins++; unlock("tradein1");
+    }
+    sellCar(car, cashIn, v, action);
+    if (extraCost){ G.cash -= extraCost; addFin("service", extraCost); }
+    G.stats.negoWin++; G.tutorial.sale = true;
+    toast("🎉 成約！ " + car.nm + " を " + man(price) + " で販売" + (label ? "（" + label + "）" : ""));
+  } else {
+    G.stats.negoLose++;
+    G.visitors = G.visitors.filter(function(x){ return x.id !== vId; });
+    toast("商談はまとまりませんでした…（成約見込み " + p + "%）");
+    addNews("商談不成立", v.name + "（" + v.type + "）との " + car.nm + " の商談は不成立。" + (price > v.budget ? "予算オーバーが響いたようだ。" : "条件が折り合わなかった。"), "bad");
+  }
+  checkAch(); saveGame(); render();
+}
+function sellCar(car, cashIn, visitor, viaNego){
+  G.cash += cashIn;
+  var totalCost = car.cost + car.serviceCost;
+  addFin("sales", cashIn + (viaNego === "option" ? 0 : 0)); addFin("cogs", totalCost);
+  G.inventory = G.inventory.filter(function(c){ return c.id !== car.id; });
+  G.visitors = G.visitors.filter(function(x){ return x.carId !== car.id; });
+  G.stats.soldCount++;
+  creditStaff("sales", "sold");
+  var profit = cashIn - totalCost;
+  var fair = clamp(1 - (cashIn / Math.max(carValue(car),1) - 1), 0.6, 1.15);
+  var satis = Math.round(clamp(45 + fair * 30 + car.quality * 18 + rnd(-6, 8), 5, 100));
+  G.customers.unshift({ name: visitor ? visitor.name : "ネット経由の購入者", car: car.mk + " " + car.nm, day: G.day, price: cashIn, satis: satis, claim: false });
+  if (G.customers.length > 60) G.customers.length = 60;
+  // 評判：適正価格・高品質はプラス、割高・低品質はマイナス
+  var repDelta = (satis >= 70 ? 0.7 : satis <= 35 ? -2 : 0.1);
+  G.rep = clamp(G.rep + repDelta, 1, 100);
+  // クレーム予約：故障リスクに応じて数日〜数週間後に発生しうる
+  var risk = faultRisk(car);
+  if (Math.random() < risk){
+    var sev = car.hidden > 0.4 ? rnd(0.5, 1) : rnd(0.15, 0.5);
+    G.claims.push({ id: uid("cl"), carId: car.id, carName: car.mk + " " + car.nm, buyer: visitor ? visitor.name : "購入者",
+      dueDay: G.day + ri(2, 20), cost: Math.round(cashIn * 0.06 * (1 + sev * 2.2) / 1000) * 1000, severity: sev, resolved: false });
+  }
+  if (car.rare >= 4) unlock("rare_sale");
+  if (cashIn >= 5000000) unlock("lux_sale");
+  addNews("成約", (visitor ? visitor.name + " に " : "") + car_.nameOf(car) + " を " + man(cashIn) + " で販売。粗利 " + (profit >= 0 ? "+" : "") + man(profit) + "。満足度 " + satis + "。", profit >= 0 ? "good" : "bad");
+}
+
+/* ---------- クレーム対応 ---------- */
+function resolveClaim(id, mode){
+  var cl = null;
+  G.claims.forEach(function(c){ if (c.id === id) cl = c; });
+  if (!cl || cl.resolved || !cl.active) return;
+  cl.resolved = true;
+  if (mode === "full"){
+    G.cash -= cl.cost; addFin("warranty", cl.cost);
+    G.rep = clamp(G.rep + 1.5, 1, 100);
+    addNews("クレーム対応", cl.carName + " の不具合を無償修理（" + man(cl.cost) + "）。購入者からは丁寧な対応と感謝された。", "info");
+    toast("無償修理で対応しました（評判アップ）");
+  } else if (mode === "half"){
+    var h = Math.round(cl.cost * 0.55 / 1000) * 1000;
+    G.cash -= h; addFin("warranty", h);
+    G.rep = clamp(G.rep - 1, 1, 100);
+    addNews("クレーム対応", cl.carName + " の修理費を一部負担（" + man(h) + "）。購入者は渋々納得。", "info");
+    toast("一部負担で対応しました");
+  } else {
+    G.rep = clamp(G.rep - 4.5, 1, 100);
+    addNews("クレーム対応", cl.carName + " の不具合対応を断ったところ、口コミサイトに厳しい投稿が…評判が下がった。", "bad");
+    toast("対応を断りました（評判ダウン）");
+  }
+  G.stats.claims++;
+  saveGame(); render();
+}
+
+/* ---------- 借入 ---------- */
+function loanLimit(){ return 10000000 + G.inventory.reduce(function(s,c){ return s + carValue(c); }, 0) * 0.3; }
+function doLoan(amt){
+  if (amt > 0){
+    if (G.loan + amt > loanLimit()){ toast("借入限度額を超えています"); return; }
+    G.loan += amt; G.cash += amt; toast(man(amt) + " を借り入れました");
+  } else {
+    var rep = Math.min(-amt, G.loan, G.cash);
+    G.loan -= rep; G.cash -= rep; toast(man(rep) + " を返済しました");
+  }
+  saveGame(); render();
+}
+
+/* ---------- 従業員・設備・広告 ---------- */
+function hireStaff(id){
+  var c = null;
+  G.candidates.forEach(function(x){ if (x.id === id) c = x; });
+  if (!c) return;
+  G.staff.push(c);
+  G.candidates = G.candidates.filter(function(x){ return x.id !== id; });
+  toast(c.name + " を採用しました");
+  addNews("採用", ROLES.filter(function(r){ return r.id===c.role; })[0].nm + "として " + c.name + "（能力 " + c.skill + "）を採用。経歴：" + (c.career || "—") + "。月給 " + man(c.salary) + "。", "info");
+  saveGame(); render();
+}
+function fireStaff(id){
+  if (G.staff.length <= 1){ toast("最低1名のスタッフが必要です"); return; }
+  var s = G.staff.filter(function(x){ return x.id === id; })[0];
+  G.staff = G.staff.filter(function(x){ return x.id !== id; });
+  G.rep = clamp(G.rep - 0.5, 1, 100);
+  toast(s.name + " が退職しました");
+  saveGame(); render();
+}
+function buyFacility(id){
+  var f = FACILITIES.filter(function(x){ return x.id===id; })[0];
+  var lv = G.fac[id] || 0;
+  if (lv >= f.max){ toast("すでに最大レベルです"); return; }
+  var cost = f.cost[lv];
+  if (G.cash < cost){ toast("資金が不足しています"); return; }
+  G.cash -= cost; G.fac[id] = lv + 1;
+  if (id === "showroom") G.rep = clamp(G.rep + 3, 1, 100);
+  toast("設備投資：" + f.nm + " を導入しました");
+  addNews("設備投資", f.nm + " を " + man(cost) + " で導入。" + f.desc + "。", "good");
+  checkAch(); saveGame(); render();
+}
+function setAdPlan(id){
+  G.adPlan = id; saveGame(); render();
+  toast("広告プランを変更：" + AD_PLANS[id].nm);
+}
+/* ---------- ランダムイベント ---------- */
+var EVENTS = [
+ { w:10, can:function(){ return true; }, run:function(){
+    var cat = pick(CATS); G.market[cat] = clamp(G.market[cat] * rnd(1.06, 1.16), 0.7, 1.6);
+    return ["相場急騰", cat + " の中古相場が急騰している。メーカーの生産遅延が影響しているようだ。在庫があれば売り時かもしれない。", "good"]; } },
+ { w:8, can:function(){ return true; }, run:function(){
+    var cat = pick(CATS); G.market[cat] = clamp(G.market[cat] * rnd(0.86, 0.95), 0.7, 1.6);
+    return ["相場下落", cat + " の相場が下落。新車の値引き拡大で中古人気が冷え込んでいる。", "bad"]; } },
+ { w:7, can:function(){ return true; }, run:function(){
+    G.buffs.visitorDays = 3; G.buffs.visitorMult = 1.5;
+    return ["地域イベント", "近隣で住宅展示場フェアが開催され、今後3日間は来店客が増えそうだ。", "good"]; } },
+ { w:6, can:function(){ return true; }, run:function(){
+    G.fuel = clamp(G.fuel + ri(4, 12), 130, 230); G.market["ハイブリッドカー"] = clamp(G.market["ハイブリッドカー"] * 1.05, 0.7, 1.6); G.market["SUV"] = clamp(G.market["SUV"] * 0.97, 0.7, 1.6);
+    return ["燃料価格上昇", "ガソリン価格が " + G.fuel + "円/L まで上昇。ハイブリッド人気が高まり、大型SUVはやや敬遠されている。", "info"]; } },
+ { w:5, can:function(){ return true; }, run:function(){
+    G.fuel = clamp(G.fuel - ri(3, 9), 130, 230);
+    return ["燃料価格下落", "ガソリン価格が " + G.fuel + "円/L まで下落。スポーツカーやSUVへの関心が戻りつつある。", "info"]; } },
+ { w:6, can:function(){ return G.rep >= 55; }, run:function(){
+    G.rep = clamp(G.rep + 2.5, 1, 100); G.buffs.visitorDays = 2; G.buffs.visitorMult = 1.35;
+    return ["SNSで評判拡散", "購入者の投稿がSNSで拡散され、店舗の評判が上昇。しばらく来店が増えそうだ。", "good"]; } },
+ { w:5, can:function(){ return true; }, run:function(){
+    G.economy = clamp(G.economy * 0.93, 0.8, 1.12);
+    return ["景気悪化の兆し", "地域経済に陰り。消費者の財布の紐が固くなり、来店・成約が鈍りそうだ。", "bad"]; } },
+ { w:4, can:function(){ return true; }, run:function(){
+    G.economy = clamp(G.economy * 1.06, 0.8, 1.12);
+    return ["景気回復", "景況感が改善し、車の買い替え需要が高まっている。", "good"]; } },
+ { w:5, can:function(){ return G.inventory.length >= 4; }, run:function(){
+    var cat = G.inventory[ri(0, G.inventory.length-1)].cat;
+    G.market[cat] = clamp(G.market[cat] * 1.07, 0.7, 1.6);
+    return ["需要増加", cat + " の需要が増加し相場が上昇。自店の在庫にも追い風だ。", "good"]; } },
+ { w:4, can:function(){ return G.staff.length >= 3; }, run:function(){
+    var s = pick(G.staff.slice(1));
+    if (!s) return ["スタッフ研修", "スタッフ研修を実施し、接客の基本を再確認した。", "info"];
+    G.staff = G.staff.filter(function(x){ return x.id !== s.id; });
+    return ["スタッフ退職", s.name + " が一身上の都合で退職した。人員補充を検討したい。", "bad"]; } },
+ { w:4, can:function(){ return G.cash > 300000; }, run:function(){
+    var cost = ri(4, 14) * 10000; G.cash -= cost; addFin("fees", cost);
+    return ["想定外の出費", "店舗設備の修繕など想定外の出費 " + man(cost) + " が発生した。", "bad"]; } },
+ { w:3, can:function(){ return true; }, run:function(){
+    return ["希少車の入荷情報", "業者仲間から希少車の入荷情報が届いた。オークション・業者間取引をこまめにチェックしよう。", "info"]; } },
+ { w:4, can:function(){ return true; }, run:function(){
+    G.dealerTrust = Math.max(0, G.dealerTrust - 1);
+    return ["競合店の出店", "近隣に競合の中古車店が出店した。業者間の条件がやや厳しくなっている。", "bad"]; } }
+];
+function fireEvent(){
+  var pool = [];
+  EVENTS.forEach(function(e){ if (e.can()) for (var i=0;i<e.w;i++) pool.push(e); });
+  if (!pool.length) return;
+  var r = pick(pool).run();
+  addNews(r[0], r[1], r[2]);
+}
+
+/* ---------- 1日進める ---------- */
+function advanceDay(force){
+  if (G.gameOver) return;
+  if (!force && activeClaims().length){ openClaimConfirm(); return; }
+  G.day++;
+  var diff = DIFFS[G.diff];
+  // 市場変動
+  CATS.forEach(function(c){ G.market[c] = clamp(G.market[c] * rnd(0.994, 1.006), 0.7, 1.6); });
+  G.fuel = clamp(G.fuel + ri(-2, 2), 130, 230);
+  // 在庫経過
+  G.inventory.forEach(function(c){ c.days++; if (c.inspect > 0 && G.day % 30 === 0) c.inspect--; });
+  // 整備進行
+  var stillWorking = [];
+  G.inventory.forEach(function(c){
+    if (c.status === "service" && c.serviceQueue.length){
+      var sq = c.serviceQueue[0];
+      sq.left--;
+      if (sq.left <= 0){ applyService(c, sq); c.serviceQueue.shift(); }
+      if (!c.serviceQueue.length) c.status = "stock";
+    }
+  });
+  // 広告費・保管費（日次）
+  var ad = AD_PLANS[G.adPlan];
+  var adCost = Math.round(ad.cost * diff.costMult);
+  if (adCost > 0){ G.cash -= adCost; addFin("ads", adCost); }
+  var storage = G.inventory.length * (G.fac.yard ? 120 : 240);
+  if (storage > 0){ G.cash -= storage; addFin("fees", storage); }
+  // バフ減衰
+  if (G.buffs.visitorDays > 0){ G.buffs.visitorDays--; if (G.buffs.visitorDays === 0) G.buffs.visitorMult = 1; }
+  // 来店客
+  genVisitors();
+  // ネット経由の自動成約（割安な車が時々売れる）
+  var autoSold = [];
+  G.inventory.slice().forEach(function(c){
+    if (c.status !== "stock" || !c.askPrice) return;
+    var val = carValue(c);
+    var ratio = c.askPrice / val;
+    var p = ratio <= 0.92 ? 0.10 : ratio <= 1.0 ? 0.045 : ratio <= 1.08 ? 0.012 : 0.002;
+    if (G.fac.studio) p *= 1.35;
+    if (Math.random() < p) autoSold.push(c);
+  });
+  autoSold.slice(0, 2).forEach(function(c){
+    sellCar(c, c.askPrice, null, "web");
+    toast("ネット掲載から成約：" + c.nm + " " + man(c.askPrice));
+  });
+  // クレーム発動
+  G.claims.forEach(function(cl){
+    if (!cl.resolved && !cl.active && G.day >= cl.dueDay){
+      cl.active = true;
+      addNews("クレーム発生", cl.buyer + " から「" + cl.carName + " に不具合がある」と連絡。修理費の見込みは " + man(cl.cost) + "。ダッシュボードから対応を選ぼう。", "bad");
+    }
+  });
+  // ランダムイベント
+  if (Math.random() < 0.16) fireEvent();
+  // 市場リフレッシュ（3日ごと）
+  if (G.day % 3 === 0) refreshMarket(false);
+  if (G.day % 7 === 0) refreshCandidates();
+  // スタッフ疲労
+  G.staff.forEach(function(s){ s.fatigue = clamp(s.fatigue + ri(-2, 4), 0, 100); });
+  // 月次決算
+  if (isMonthEnd(G.day - 1)) monthEnd();
+  // 資金ショート警告
+  if (G.cash < 0 && !G.gameOver){
+    addNews("資金警告", "現金残高がマイナスになった。月末の固定費支払いで倒産する恐れがある。借入か在庫の現金化を急ごう。", "bad");
+  }
+  checkAch();
+  saveGame(); render();
+  if (G.monthReport){ openMonthReport(); }
+}
+function monthEnd(){
+  var fixed = monthlyFixed();
+  var interest = Math.round(G.loan * 0.006);
+  G.cash -= fixed.total + interest;
+  addFin("fixed", fixed.total); addFin("interest", interest);
+  var f = G.fin;
+  var gross = f.sales - f.cogs;
+  var op = gross - f.service - f.ads - f.transport - f.warranty - f.fees - f.fixed - f.interest;
+  G.monthHist.push({ label: monthLabel(G.day - 1), sales: f.sales, profit: op,
+    br: { cogs: f.cogs, service: f.service, ads: f.ads, other: f.transport + f.warranty + f.fees, fixed: fixed.total, interest: interest } });
+  if (G.monthHist.length > 24) G.monthHist.shift();
+  G.monthReport = { label: monthLabel(G.day - 1), sales: f.sales, cogs: f.cogs, gross: gross, service: f.service, ads: f.ads, transport: f.transport, warranty: f.warranty, fees: f.fees, fixed: fixed, interest: interest, op: op, cash: G.cash };
+  if (G.day >= 30 && !G.goal30done){
+    G.goal30done = true;
+    if (op > 0) addNews("目標達成", "最初の30日間を黒字で経営できた！この調子で規模拡大を目指そう。", "good");
+    else addNews("目標未達", "最初の30日間は赤字着地。価格設定と仕入れ単価を見直そう。まだ取り返せる。", "bad");
+  }
+  G.fin = newFin();
+  // 倒産判定：月末に現金が大きくマイナス
+  if (G.cash < -300000){
+    G.gameOver = true;
+    addNews("倒産", "資金繰りが限界に達し、店舗を閉めることになった…。", "bad");
+  }
+}
+/* =========================================================
+   描画
+   ========================================================= */
+var COLOR_HEX = {"パールホワイト":"#dfe3e8","ブラック":"#23262b","シルバー":"#b9c0c9","グレー":"#6f7680","レッド":"#b3272d","ブルー":"#2456a6","ネイビー":"#1d3350","ベージュ":"#c9b48c","グリーン":"#2e6b46","ブラウン":"#6e4a2f","ワインレッド":"#72243a","オレンジ":"#d96c27"};
+/* =========================================================
+   車両イラスト（3/4フロントビュー）
+   ・全車種とも実車の全長L／全高H（m）を持ち、同一スケール
+     （44.5px/m・天地共通）で描く。地面ラインは全車種で統一。
+   ・横位置はバンパー先端からの距離 s(m) で管理し、側面は
+     奥行分だけ圧縮写像 X(s) する。左に幅を持たせたフロント面
+     （グリル＋両ヘッドライト＋バンパー）、ボンネット上面、
+     フロントガラス正面、ルーフ上面を接続して描く3/4構図。
+   ・ガラスはピラーラインの内側にインセットし、Aピラー／
+     ルーフ／Cピラーにボディ色の帯を残してボディと一体化。
+   ・ボディ形状はアーキタイプ（骨格）＋車種別パラメータで生成し、
+     ルーフライン／デッキ／ノーズで車種差を付ける。
+   ========================================================= */
+var PXM = 44.5, GY = 117; // px/m と地面ライン（全車種共通）
+var MODEL_SPEC = {
+ "N-BOX":{L:3.395,H:1.780,wb:2.520,t:"kei",nh:1.03,bl:1.05,hl:3,fl:"slide"},
+ "タント":{L:3.395,H:1.755,wb:2.460,t:"kei",nh:1.03,bl:1.05,hl:3,fl:"slide"},
+ "ワゴンR":{L:3.395,H:1.650,wb:2.425,t:"kei",nh:0.97,bl:1.00,hl:0,fl:""},
+ "ムーヴキャンバス":{L:3.395,H:1.655,wb:2.455,t:"kei",nh:0.97,bl:1.00,hl:1,fl:""},
+ "ハスラー":{L:3.395,H:1.680,wb:2.425,t:"keiSUV",nh:1.00,bl:1.02,hl:1,fl:"clad,rails"},
+ "フィット":{L:4.045,H:1.535,wb:2.530,t:"hatchTall",nh:0.82,bl:1.00,hl:0,fl:""},
+ "ヤリス":{L:3.940,H:1.500,wb:2.550,t:"hatch",nh:0.72,bl:0.95,hl:2,fl:""},
+ "ノート":{L:4.045,H:1.520,wb:2.580,t:"hatch",nh:0.74,bl:0.97,hl:0,fl:""},
+ "スイフト":{L:3.845,H:1.525,wb:2.450,t:"hatch",nh:0.72,bl:0.96,hl:0,fl:""},
+ "シビック":{L:4.550,H:1.415,wb:2.734,t:"hatchFast",nh:0.68,bl:0.92,hl:2,fl:""},
+ "アクア":{L:4.050,H:1.485,wb:2.550,t:"hatch",nh:0.70,bl:0.94,hl:0,fl:""},
+ "ジュリエッタ":{L:4.350,H:1.465,wb:2.634,t:"hatch",nh:0.70,bl:0.95,hl:1,fl:""},
+ "ゴルフ":{L:4.295,H:1.460,wb:2.636,t:"hatch",nh:0.72,bl:0.96,hl:4,fl:""},
+ "クーパー":{L:3.875,H:1.414,wb:2.495,t:"hatch",nh:0.74,bl:0.94,hl:1,fl:"twotone",rm:0.34,bp:0.46},
+ "プリウス":{L:4.600,H:1.470,wb:2.750,t:"wedge",nh:0.60,bl:0.93,hl:2,fl:""},
+ "SAI":{L:4.695,H:1.485,wb:2.700,t:"sedanFormal",nh:0.74,bl:0.97,hl:0,fl:""},
+ "カローラ ハイブリッド":{L:4.490,H:1.435,wb:2.640,t:"sedan",nh:0.72,bl:0.95,hl:2,fl:"",bp:0.47},
+ "カローラ":{L:4.490,H:1.435,wb:2.640,t:"sedan",nh:0.73,bl:0.96,hl:0,fl:"",bp:0.53},
+ "クラウン":{L:5.030,H:1.475,wb:2.920,t:"sedanFormal",nh:0.74,bl:0.98,hl:4,fl:""},
+ "スカイライン":{L:4.720,H:1.405,wb:2.850,t:"sedanSport",nh:0.68,bl:0.93,hl:2,fl:""},
+ "ギャランフォルティス":{L:4.570,H:1.490,wb:2.635,t:"sedan",nh:0.77,bl:0.99,hl:2,fl:"",rk:0.46,dk:0.5},
+ "カムリ":{L:4.885,H:1.445,wb:2.825,t:"sedan",nh:0.70,bl:0.95,hl:4,fl:"",rf:0.1},
+ "IS":{L:4.680,H:1.430,wb:2.800,t:"sedanSport",nh:0.70,bl:0.94,hl:2,fl:"big",bg:1.05},
+ "Cクラス":{L:4.685,H:1.435,wb:2.840,t:"sedan",nh:0.72,bl:0.95,hl:0,fl:""},
+ "3シリーズ":{L:4.715,H:1.435,wb:2.851,t:"sedanSport",nh:0.72,bl:0.95,hl:2,fl:""},
+ "A4":{L:4.725,H:1.435,wb:2.829,t:"sedan",nh:0.72,bl:0.95,hl:4,fl:""},
+ "LS":{L:5.235,H:1.450,wb:3.125,t:"sedanFormal",nh:0.73,bl:0.97,hl:4,fl:"big",bg:1.1},
+ "Sクラス":{L:5.180,H:1.450,wb:3.106,t:"sedanFormal",nh:0.74,bl:0.98,hl:0,fl:""},
+ "7シリーズ":{L:5.120,H:1.480,wb:3.005,t:"sedanFormal",nh:0.77,bl:1.00,hl:4,fl:"big",bg:1.05},
+ "WRX STI":{L:4.595,H:1.475,wb:2.650,t:"sedanSport",nh:0.74,bl:0.97,hl:0,fl:"scoop,wing2"},
+ "ランサーエボリューションX":{L:4.495,H:1.480,wb:2.650,t:"sedanSport",nh:0.76,bl:0.98,hl:2,fl:"bigwing,scoop,big",bg:1.1},
+ "GR86":{L:4.265,H:1.310,wb:2.575,t:"coupe",nh:0.58,bl:0.86,hl:2,fl:"twodoor"},
+ "フェアレディZ":{L:4.260,H:1.315,wb:2.550,t:"sedan",nh:0.60,bl:0.88,hl:0,fl:"twodoor",hd:1.45,rk:0.58,gr:0.55,dk:0.26},
+ "ロードスター":{L:3.915,H:1.235,wb:2.310,t:"roadster",nh:0.60,bl:0.84,hl:2,fl:"open"},
+ "ヴォクシー":{L:4.695,H:1.825,wb:2.850,t:"van",nh:1.06,bl:1.10,hl:3,fl:"slide,big",bg:1.05},
+ "セレナ":{L:4.715,H:1.865,wb:2.860,t:"van",nh:1.06,bl:1.12,hl:3,fl:"slide"},
+ "ステップワゴン":{L:4.830,H:1.845,wb:2.890,t:"van",nh:1.05,bl:1.10,hl:0,fl:"slide"},
+ "フリード":{L:4.290,H:1.710,wb:2.740,t:"van",nh:0.98,bl:1.04,hl:0,fl:"slide"},
+ "アルファード":{L:4.995,H:1.935,wb:3.000,t:"van",nh:1.10,bl:1.14,hl:3,fl:"slide,big",bg:1.3},
+ "RAV4":{L:4.600,H:1.685,wb:2.690,t:"suv",nh:0.99,bl:1.09,hl:2,fl:"clad",wr:16.5,hd:0.90,rm:0.48,bp:0.44},
+ "ハリアー":{L:4.740,H:1.660,wb:2.690,t:"suvSlope",nh:0.88,bl:1.04,hl:4,fl:""},
+ "エクストレイル":{L:4.660,H:1.725,wb:2.705,t:"suv",nh:0.96,bl:1.08,hl:3,fl:"clad,rails",wr:16.5},
+ "CX-5":{L:4.575,H:1.685,wb:2.700,t:"suv",nh:0.95,bl:1.08,hl:2,fl:"clad",wr:16,hd:0.88,rm:0.48,bp:0.45},
+ "フォレスター":{L:4.640,H:1.730,wb:2.670,t:"suv",nh:0.96,bl:1.08,hl:0,fl:"clad,rails",wr:16.5,bp:0.42},
+ "ランドクルーザー":{L:4.980,H:1.945,wb:2.850,t:"suvBox",nh:1.10,bl:1.16,hl:3,fl:"clad,big",bg:1.15,wr:17},
+ "ハイエースバン":{L:4.695,H:1.990,wb:2.570,t:"hiace",nh:1.30,bl:1.24,hl:3,fl:"panel,slide",gw:1.15},
+ "キャラバン":{L:4.695,H:1.985,wb:2.555,t:"hiace",nh:1.28,bl:1.22,hl:3,fl:"panel,slide",gw:1.38},
+ "プロボックス":{L:4.245,H:1.690,wb:2.550,t:"wagonVan",nh:0.80,bl:1.00,hl:0,fl:"glass3"},
+ "ハイゼットカーゴ":{L:3.395,H:1.855,wb:1.900,t:"keiVan",nh:1.10,bl:1.12,hl:3,fl:"panel,slide",gw:0.95},
+ "キャリイ":{L:3.395,H:1.765,wb:1.905,t:"truck",nh:1.05,bl:1.08,hl:3,fl:""}
+};
+/* アーキタイプ（骨格）：fm=フロント面の奥行(m) f0=換算用の基準fm clr=最低地上高(px) wr=ホイール半径(px)
+   fo=フロントオーバーハング hd=ボンネット長 rk=フロントガラスの傾斜ラン
+   rt=リア形状 gr/dk=ノッチ車のリアガラスラン／デッキ長 rm=リア占有長 hd2=フード後端の下がり */
+var ARCH = {
+ kei:{fm:0.67,f0:0.46,clr:5,wr:12.5,fo:0.55,hd:0.34,rk:0.30,rt:"box",rm:0.14,rs:0,hd2:2,hs:0.55},
+ keiSUV:{fm:0.70,f0:0.48,clr:7,wr:13.5,fo:0.58,hd:0.36,rk:0.34,rt:"box",rm:0.16,rs:0,hd2:2},
+ hatch:{fm:0.75,f0:0.52,clr:5,wr:13.5,fo:0.80,hd:0.78,rk:0.52,rt:"hatch",rm:0.52,rs:3,hd2:5},
+ hatchTall:{fm:0.75,f0:0.52,clr:5,wr:13.5,fo:0.78,hd:0.62,rk:0.78,rt:"hatch",rm:0.50,rs:2,hd2:3},
+ hatchFast:{fm:0.77,f0:0.53,clr:5,wr:14,fo:0.85,hd:0.85,rk:0.55,rt:"slope",rm:0.95,rs:5,hd2:5},
+ sedan:{fm:0.80,f0:0.55,clr:5,wr:14.5,fo:0.92,hd:1.02,rk:0.55,rt:"notch",gr:0.50,dk:0.62,rs:2,hd2:5},
+ sedanFormal:{fm:0.80,f0:0.55,clr:5,wr:14.5,fo:0.95,hd:1.05,rk:0.50,rt:"notch",gr:0.40,dk:0.85,rs:2,hd2:5},
+ sedanSport:{fm:0.80,f0:0.55,clr:5,wr:14.5,fo:0.92,hd:1.05,rk:0.58,rt:"notch",gr:0.62,dk:0.42,rs:3,hd2:5},
+ wedge:{fm:0.80,f0:0.55,clr:5,wr:14.5,fo:0.90,hd:0.95,rk:0.80,rt:"notch",gr:0.55,dk:0.30,rs:4,hd2:2},
+ coupe:{fm:0.80,f0:0.55,clr:5,wr:14.5,fo:0.95,hd:1.25,rk:0.62,rt:"slope",rm:0.95,rs:6,hd2:4},
+ van:{fm:0.75,f0:0.52,clr:5,wr:14.5,fo:0.92,hd:0.52,rk:0.48,rt:"box",rm:0.12,rs:0,hd2:2,hs:0.6},
+ suv:{fm:0.84,f0:0.58,clr:8,wr:16.5,fo:0.88,hd:0.95,rk:0.50,rt:"hatch",rm:0.50,rs:2,hd2:4},
+ suvSlope:{fm:0.84,f0:0.58,clr:8,wr:16,fo:0.88,hd:0.95,rk:0.52,rt:"slope",rm:0.85,rs:5,hd2:4},
+ suvBox:{fm:0.87,f0:0.60,clr:9,wr:17,fo:1.00,hd:0.95,rk:0.38,rt:"box",rm:0.14,rs:0,hd2:2},
+ hiace:{fm:0.72,f0:0.50,clr:6,wr:14.5,fo:1.02,hd:0.58,rk:0.30,rt:"box",rm:0.12,rs:0,hd2:1,hs:0.4},
+ keiVan:{fm:0.64,f0:0.44,clr:5,wr:12.5,fo:0.72,hd:0.38,rk:0.28,rt:"box",rm:0.12,rs:0,hd2:1,hs:0.4},
+ wagonVan:{fm:0.72,f0:0.50,clr:5,wr:13.5,fo:0.85,hd:0.80,rk:0.45,rt:"box",rm:0.12,rs:0,hd2:4,hs:0.6},
+ roadster:{fm:0.75,f0:0.52,clr:4,wr:14,fo:0.95,hd:1.30,rk:0.30,rt:"deck",rm:0.6,rs:0,hd2:3},
+ truck:{fm:0.64,f0:0.44,clr:7,wr:12.5,fo:0.78,hd:0.18,rk:0.30,rt:"truck",rm:0,rs:0,hd2:1}
+};
+function shade(hex, amt){
+  var n = parseInt(hex.slice(1), 16);
+  var r = Math.max(0, Math.min(255, (n>>16) + amt)), g = Math.max(0, Math.min(255, ((n>>8)&255) + amt)), b = Math.max(0, Math.min(255, (n&255) + amt));
+  return "rgb(" + r + "," + g + "," + b + ")";
+}
+function wheelSVG(cx, cy, r){
+  var s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 3) + '" fill="#131920"/>';
+  s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#262c33"/>';
+  s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.68) + '" fill="#414b55"/>';
+  for (var i = 0; i < 5; i++){
+    var a = (i * 72 - 90) * Math.PI / 180;
+    [-8, 8].forEach(function(off){
+      var t = a + off * Math.PI / 180;
+      var x1 = cx + Math.cos(t) * r * 0.2, y1 = cy + Math.sin(t) * r * 0.2;
+      var x2 = cx + Math.cos(t) * r * 0.62, y2 = cy + Math.sin(t) * r * 0.62;
+      s += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="#c9d2db" stroke-width="' + (r * 0.16).toFixed(1) + '" stroke-linecap="round"/>';
+    });
+  }
+  s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.68) + '" fill="none" stroke="#d7dee6" stroke-width="1.3"/>';
+  s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.17) + '" fill="#e4eaef" stroke="#79838e" stroke-width="0.8"/>';
+  return s;
+}
+function headlightSVG(h){
+  var x = h[0], y = h[1], k = h[2], s = "";
+  if (k === 1){
+    s += '<circle cx="' + (x + 6) + '" cy="' + (y + 2) + '" r="6.2" fill="#f2f7fb" stroke="#5b6672" stroke-width="1.1"/>';
+    s += '<circle cx="' + (x + 6) + '" cy="' + (y + 2) + '" r="2.9" fill="#bcd2e2"/>';
+  } else if (k === 3){
+    s += '<rect x="' + (x - 3) + '" y="' + (y - 7) + '" width="8.5" height="15" rx="3.5" fill="#eef4f9" stroke="#5b6672" stroke-width="1.1"/>';
+    s += '<line x1="' + (x - 0.8) + '" y1="' + y + '" x2="' + (x + 3.4) + '" y2="' + y + '" stroke="#9fb4c6" stroke-width="1.4"/>';
+  } else if (k === 4){
+    s += '<path d="M' + x + ' ' + (y + 2) + ' Q' + (x + 12) + ' ' + (y - 3) + ' ' + (x + 27) + ' ' + (y - 1) + ' Q' + (x + 28.5) + ' ' + (y + 1.5) + ' ' + (x + 24) + ' ' + (y + 3.5) + ' Q' + (x + 12) + ' ' + (y + 5) + ' ' + (x + 2) + ' ' + (y + 4) + ' Z" fill="#eef4f9" stroke="#5b6672" stroke-width="1"/>';
+  } else if (k === 2){
+    s += '<path d="M' + x + ' ' + (y + 4) + ' L' + (x + 9) + ' ' + (y - 3) + ' L' + (x + 25) + ' ' + (y - 1) + ' L' + (x + 21) + ' ' + (y + 5) + ' L' + (x + 5) + ' ' + (y + 6) + ' Z" fill="#eef4f9" stroke="#5b6672" stroke-width="1"/>';
+    s += '<path d="M' + (x + 19) + ' ' + (y - 1.4) + ' L' + (x + 25) + ' ' + (y - 1) + ' L' + (x + 21) + ' ' + (y + 5) + ' L' + (x + 16.5) + ' ' + (y + 4) + ' Z" fill="#f59a3c"/>';
+  } else {
+    s += '<path d="M' + x + ' ' + (y + 3) + ' Q' + (x + 3) + ' ' + (y - 3) + ' ' + (x + 13) + ' ' + (y - 3.5) + ' Q' + (x + 24) + ' ' + (y - 3) + ' ' + (x + 27) + ' ' + (y + 0.5) + ' Q' + (x + 24) + ' ' + (y + 5) + ' ' + (x + 13) + ' ' + (y + 6) + ' Q' + (x + 3) + ' ' + (y + 6) + ' ' + x + ' ' + (y + 3) + ' Z" fill="#f2f7fb" stroke="#5b6672" stroke-width="1"/>';
+    s += '<path d="M' + (x + 21) + ' ' + (y - 2.4) + ' Q' + (x + 26) + ' ' + (y - 1) + ' ' + (x + 27) + ' ' + (y + 0.5) + ' Q' + (x + 24) + ' ' + (y + 4.4) + ' ' + (x + 19) + ' ' + (y + 5) + ' Z" fill="#f59a3c"/>';
+  }
+  return s;
+}
+function carSVG(car){
+  var nm = car && car.nm ? car.nm : "";
+  var sp = MODEL_SPEC[nm];
+  if (!sp){
+    var cat = car ? car.cat : "";
+    sp = cat==="商用車" ? MODEL_SPEC["ハイエースバン"] : cat==="SUV" ? MODEL_SPEC["RAV4"] : cat==="スポーツカー" ? MODEL_SPEC["GR86"] : cat==="ミニバン" ? MODEL_SPEC["ヴォクシー"] : cat==="軽自動車" ? MODEL_SPEC["ワゴンR"] : MODEL_SPEC["カローラ"];
+  }
+  var A = ARCH[sp.t] || ARCH.sedan;
+  var hex = COLOR_HEX[car ? car.color : ""] || "#5b7a99";
+  var gid = "cg" + String(car && car.id ? car.id : "x").replace(/[^a-zA-Z0-9]/g,"");
+  var fl = "," + (sp.fl || "") + ",";
+  function has(k){ return fl.indexOf("," + k + ",") >= 0; }
+  function R(v){ return Math.round(v * 10) / 10; }
+  /* ---- 実寸スケールのジオメトリ ----
+     横位置は「バンパー先端からの距離 s(m)」で管理し、側面は
+     全長スケールを保ったまま奥行分だけ圧縮して X(s) に写す。
+     ガラスはピラーラインの内側に平行インセットし、Aピラー／
+     ルーフ／Cピラーにボディ色の帯を残して一体感を出す。 */
+  var faceM = A.fm;
+  var W = sp.L * PXM, faceW = faceM * PXM;
+  var x0 = (260 - W) / 2, x1 = x0 + faceW, x2 = x0 + W;
+  var SXM = (W - faceW) / sp.L; // 側面の px/m（奥行圧縮後も地面・天地は共通）
+  function X(s){ return x1 + s * SXM; }
+  var roofY = GY - sp.H * PXM, beltY = GY - sp.bl * PXM, noseY = GY - sp.nh * PXM;
+  var botY = GY - A.clr;
+  var hdM = sp.hd || A.hd, rkM = sp.rk || A.rk;
+  var grM = sp.gr || A.gr, dkM = sp.dk || A.dk;
+  var rearM = A.rt === "notch" ? (grM + dkM) : (sp.rm || A.rm);
+  var rfM = sp.rf || 0, f0 = A.f0 || 0.55;
+  var sHX = f0 + hdM, sWX = sHX + rkM;
+  var hX = X(sHX), hY = beltY + A.hd2;              // フロントガラス下端（カウル）
+  var wX = X(sWX);                                  // ルーフ前端
+  var rX = X(sp.L - rearM + rfM), rs = A.rs || 0;   // ルーフ後端
+  var gx2 = A.rt === "notch" ? X(sp.L - dkM + rfM) : A.rt === "box" ? x2 - 7 : x2 - 5;
+  var glassRX = has("panel") ? X(sWX + (sp.gw || 1.15)) : gx2; // ガラス後端
+  var fwX = X(sp.fo || A.fo), rwX = X((sp.fo || A.fo) + sp.wb), wr = sp.wr || A.wr;
+  var fwR = wr * 1.07, rwR = wr * 0.95;             // 手前の前輪を少し大きく
+  var big = has("big") || has("bigwing");
+  var isOpen = sp.t === "roadster", isTruck = sp.t === "truck";
+  var isWedge = sp.t === "wedge";
+  // ボンネット上面の奥側後端（フロントガラス正面の奥側下端と一致）
+  var hoodFarX = hX - faceW * (A.hs || 0.68), hoodFarY = hY - 5;
+  /* ---- ボディ側面パス／ガラスパス ---- */
+  var d, g, gFX, gBotRX;
+  if (isTruck){
+    var cabRX = X((sp.fo || A.fo) + 0.62);
+    var bedY = GY - 0.98 * PXM;
+    d = "M" + R(x1 + 2) + " " + botY + " L" + R(x1) + " " + R(noseY + 8)
+      + " Q" + R(x1) + " " + R(noseY) + " " + R(x1 + 5) + " " + R(noseY - 1)
+      + " L" + R(hX) + " " + R(beltY + 2) + " L" + R(wX) + " " + R(roofY + 3)
+      + " L" + R(cabRX) + " " + R(roofY + 3) + " L" + R(cabRX) + " " + R(bedY)
+      + " L" + R(x2 - 1) + " " + R(bedY) + " L" + R(x2) + " " + R(botY - 1) + " Z";
+    g = "M" + R(hX + 1) + " " + R(beltY - 1) + " L" + R(wX + 1) + " " + R(roofY + 6)
+      + " L" + R(cabRX - 3) + " " + R(roofY + 6) + " L" + R(cabRX - 3) + " " + R(beltY - 1) + " Z";
+    glassRX = cabRX - 3;
+    gFX = hX + 1; gBotRX = glassRX;
+  } else if (isOpen){
+    d = "M" + R(x1 + 2) + " " + botY + " L" + R(x1) + " " + R(noseY + 8)
+      + " Q" + R(x1) + " " + R(noseY) + " " + R(x1 + 6) + " " + R(noseY - 1)
+      + " L" + R(hX) + " " + R(beltY + 3)
+      + " Q" + R(hX + 10) + " " + R(beltY - 1) + " " + R(wX) + " " + R(beltY - 13)
+      + " L" + R(wX + 8) + " " + R(beltY - 1)
+      + " Q" + R((wX + x2) / 2) + " " + R(beltY - 5) + " " + R(x2 - 2) + " " + R(beltY + 3)
+      + " L" + R(x2) + " " + R(botY - 1) + " Z";
+    g = "M" + R(hX + 2) + " " + R(beltY - 1) + " L" + R(wX + 1) + " " + R(beltY - 12)
+      + " L" + R(wX + 7) + " " + R(beltY - 1) + " Z";
+    glassRX = wX + 7;
+    gFX = hX + 2; gBotRX = glassRX;
+  } else {
+    d = "M" + R(x1 + 2) + " " + botY + " L" + R(x1) + " " + R(noseY + 9)
+      + " Q" + R(x1) + " " + R(noseY + 1) + " " + R(x1 + 5) + " " + R(noseY);
+    if (isWedge){
+      // プリウス：ノーズ→カウル→ルーフを1本の曲線でつなぎ、上面と連続させる
+      d += " Q" + R(hX) + " " + R(hY + 3) + " " + R(wX) + " " + R(roofY + 3);
+    } else {
+      d += " L" + R(hX) + " " + R(hY) + " L" + R(wX) + " " + R(roofY + 3);
+    }
+    d += " L" + R(rX) + " " + R(roofY + 3 + rs);
+    if (A.rt === "notch") d += " L" + R(gx2) + " " + R(beltY) + " L" + R(x2 - 1) + " " + R(beltY + 7);
+    else if (A.rt === "hatch") d += " L" + R(gx2) + " " + R(beltY + 2);
+    else if (A.rt === "slope") d += " Q" + R((rX + gx2) / 2) + " " + R(beltY - 6) + " " + R(gx2) + " " + R(beltY + 4);
+    else d += " L" + R(x2 - 1) + " " + R(roofY + 5);
+    d += " L" + R(x2) + " " + R(botY - 1) + " L" + R(x1 + 2) + " " + botY + " Z";
+    /* ガラス：Aピラーラインを内側へ平行移動した位置に前端を置く */
+    var gFY = isWedge ? beltY - 3 : beltY - 1;
+    var pilFrac = (hY - gFY) / Math.max(6, hY - (roofY + 3));
+    gFX = hX + (wX - hX) * pilFrac + (isWedge ? 3.5 : 4.2);
+    var gTX = wX + 3.5, gTY = roofY + 7;
+    var gTopRX = has("panel") ? glassRX + 1 : rX - 3;
+    gBotRX = has("panel") ? glassRX - 3 : gx2 - 4;
+    if (isWedge){
+      g = "M" + R(gFX) + " " + R(gFY)
+        + " Q" + R((gFX + gTX) / 2 + 1) + " " + R((gFY + gTY) / 2) + " " + R(gTX) + " " + R(gTY)
+        + " L" + R(gTopRX) + " " + R(gTY + rs) + " L" + R(gBotRX) + " " + R(beltY - 1) + " Z";
+    } else {
+      g = "M" + R(gFX) + " " + R(gFY) + " L" + R(gTX) + " " + R(gTY)
+        + " L" + R(gTopRX) + " " + R(gTY + rs) + " L" + R(gBotRX) + " " + R(beltY - 1) + " Z";
+    }
+  }
+  var bpX = gFX + (gBotRX - gFX) * (sp.bp || 0.5);
+  /* ---- 組み立て ---- */
+  var s = '<svg viewBox="0 0 260 132" width="238" height="121" role="img" aria-label="' + esc(nm) + ' イラスト">';
+  s += '<defs>'
+    + '<linearGradient id="' + gid + 'b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + shade(hex,52) + '"/><stop offset="0.45" stop-color="' + shade(hex,20) + '"/><stop offset="0.8" stop-color="' + hex + '"/><stop offset="1" stop-color="' + shade(hex,-26) + '"/></linearGradient>'
+    + '<linearGradient id="' + gid + 'g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f9fc"/><stop offset="1" stop-color="#b7cfdf"/></linearGradient>'
+    + '<linearGradient id="' + gid + 'f" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="' + shade(hex,-34) + '"/><stop offset="1" stop-color="' + shade(hex,-8) + '"/></linearGradient>'
+    + '<linearGradient id="' + gid + 's" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(8,14,22,0.22)"/><stop offset="1" stop-color="rgba(8,14,22,0)"/></linearGradient>'
+    + '<clipPath id="' + gid + 'c"><path d="' + d + '"/></clipPath>'
+    + '<clipPath id="' + gid + 'v"><path d="' + g + '"/></clipPath>'
+    + '</defs>';
+  s += '<ellipse cx="' + R((x0 + x2) / 2) + '" cy="118" rx="' + R(W * 0.52) + '" ry="5.5" fill="rgba(10,18,26,.28)"/>';
+  // 奥側の前輪（バンパー下に覗く）
+  s += '<circle cx="' + R(x0 + faceW * 0.42) + '" cy="' + R(GY - wr * 0.55) + '" r="' + R(wr * 0.52) + '" fill="#1d232a"/>';
+  /* ---- フロント面（3/4） ---- */
+  var faceTopY = noseY + 7, faceBotY = GY - Math.max(2, A.clr - 3);
+  s += '<path d="M' + R(x1 - 1) + " " + R(noseY + 1) + " L" + R(x0 + 1) + " " + R(faceTopY) + " L" + R(x0 + 1) + " " + R(faceBotY) + " L" + R(x1 + 2) + " " + R(faceBotY - 1) + ' Z" fill="url(#' + gid + 'f)" stroke="#49545f" stroke-width="1.2" stroke-linejoin="round"/>';
+  // バンパー下部インテーク（面から側面へ巻き込み）
+  s += '<path d="M' + R(x0 + 1) + " " + R(faceBotY - 10) + " L" + R(x1 + 2) + " " + R(faceBotY - 11) + " L" + R(x1 + 16) + " " + R(faceBotY - 10) + " L" + R(x1 + 16) + " " + R(faceBotY - 1) + " L" + R(x1 + 2) + " " + R(faceBotY - 1) + " L" + R(x0 + 1) + " " + R(faceBotY) + ' Z" fill="rgba(12,18,25,.42)"/>';
+  // グリル＋エンブレム
+  var faceH = faceBotY - faceTopY, bgS = sp.bg || 1;
+  var gcx = x0 + faceW * 0.52, gcy = faceTopY + faceH * (big ? 0.42 : 0.5);
+  var gw2 = faceW * (big ? 0.40 : 0.30) * bgS, gh2 = (big ? faceH * 0.26 : faceH * 0.15) * bgS;
+  s += '<path d="M' + R(gcx - gw2 * 0.92) + " " + R(gcy - gh2) + " L" + R(gcx + gw2) + " " + R(gcy - gh2) + " L" + R(gcx + gw2) + " " + R(gcy + gh2) + " L" + R(gcx - gw2 * 0.92) + " " + R(gcy + gh2) + ' Z" fill="#272e36"/>';
+  if (big){
+    s += '<line x1="' + R(gcx - gw2 * 0.8) + '" y1="' + R(gcy - gh2 * 0.35) + '" x2="' + R(gcx + gw2 * 0.88) + '" y2="' + R(gcy - gh2 * 0.35) + '" stroke="#8d99a6" stroke-width="1.5"/>';
+    s += '<line x1="' + R(gcx - gw2 * 0.8) + '" y1="' + R(gcy + gh2 * 0.4) + '" x2="' + R(gcx + gw2 * 0.88) + '" y2="' + R(gcy + gh2 * 0.4) + '" stroke="#8d99a6" stroke-width="1.5"/>';
+  }
+  s += '<circle cx="' + R(gcx) + '" cy="' + R(gcy) + '" r="2.5" fill="#d6dde4" stroke="#67727e" stroke-width="0.7"/>';
+  // 遠側ヘッドライト（フロント面の左端に両目が見える）
+  if (sp.hl === 3){
+    s += '<rect x="' + R(x0 + 2.5) + '" y="' + R(noseY + 8) + '" width="4.6" height="11" rx="2" fill="#eef4f9" stroke="#5b6672" stroke-width="0.9"/>';
+  } else {
+    s += '<ellipse cx="' + R(x0 + faceW * 0.16) + '" cy="' + R(noseY + 11) + '" rx="4.4" ry="2.9" transform="rotate(-8 ' + R(x0 + faceW * 0.16) + " " + R(noseY + 11) + ')" fill="#eef4f9" stroke="#5b6672" stroke-width="0.9"/>';
+  }
+  // 近側ヘッドライト（縦目はフロント面の右端にも描き、両目を見せる）
+  if (sp.hl === 3){
+    s += '<rect x="' + R(x1 - 8.5) + '" y="' + R(noseY + 8) + '" width="4.6" height="11" rx="2" fill="#eef4f9" stroke="#5b6672" stroke-width="0.9"/>';
+  }
+  // ナンバープレート
+  s += '<g transform="rotate(-2 ' + R(gcx) + " " + R(faceBotY - 10) + ')"><rect x="' + R(gcx - 7.5) + '" y="' + R(faceBotY - 14.5) + '" width="15" height="8.5" rx="1.1" fill="#f7f9fa" stroke="#7a838d" stroke-width="0.9"/><line x1="' + R(gcx - 4.5) + '" y1="' + R(faceBotY - 10.2) + '" x2="' + R(gcx + 4.5) + '" y2="' + R(faceBotY - 10.2) + '" stroke="#a7b0b9" stroke-width="1.3"/></g>';
+  /* ---- ボンネット上面（奥側後端はフロントガラスの下端と一致） ---- */
+  s += '<path d="M' + R(x1 + 3) + " " + R(noseY + 1) + " L" + R(hX) + " " + R(hY) + " L" + R(hoodFarX) + " " + R(hoodFarY) + " L" + R(x0 + 2) + " " + R(faceTopY) + ' Z" fill="' + shade(hex, 30) + '" opacity="0.75"/>';
+  /* ---- ボディ側面 ---- */
+  s += '<path d="' + d + '" fill="url(#' + gid + 'b)" stroke="#49545f" stroke-width="1.5" stroke-linejoin="round"/>';
+  s += '<g clip-path="url(#' + gid + 'c)">';
+  s += '<rect x="0" y="' + R(GY - 27) + '" width="260" height="30" fill="rgba(15,22,32,.10)"/>';
+  if (!isTruck) s += '<rect x="' + R(x1) + '" y="' + R(beltY - 8) + '" width="' + R(hX + 38 - x1) + '" height="' + R(botY - beltY + 8) + '" fill="url(#' + gid + 's)"/>';
+  if (has("clad")) s += '<rect x="0" y="' + R(botY - 11) + '" width="260" height="14" fill="rgba(12,17,23,.38)"/>';
+  s += '</g>';
+  /* ---- ルーフ上面（前端はフロントガラス正面の上端と端点を共有） ---- */
+  if (!isOpen && !isTruck){
+    s += '<path d="M' + R(wX) + " " + R(roofY + 3) + " L" + R(rX) + " " + R(roofY + 3 + rs) + " L" + R(rX - faceW * 0.40) + " " + R(roofY - 1 + rs) + " L" + R(wX - faceW * 0.40) + " " + R(roofY - 1) + ' Z" fill="' + (has("twotone") ? "rgba(240,244,247,.95)" : shade(hex, 22)) + '" opacity="0.9"/>';
+  }
+  if (has("twotone")){
+    s += '<path d="M' + R(wX - 2) + " " + R(roofY + 1) + " L" + R(rX + 2) + " " + R(roofY + 1 + rs) + " L" + R(rX - 2) + " " + R(roofY + 5.5 + rs) + " L" + R(wX + 2) + " " + R(roofY + 5.5) + ' Z" fill="rgba(240,244,247,.95)"/>';
+  }
+  if (isOpen){
+    s += '<path d="M' + R(wX + 14) + " " + R(beltY - 1) + " L" + R(wX + 16) + " " + R(beltY - 10) + " Q" + R(wX + 21) + " " + R(beltY - 13) + " " + R(wX + 26) + " " + R(beltY - 10) + " L" + R(wX + 27) + " " + R(beltY - 1) + ' Z" fill="#2e353e"/>';
+    s += '<path d="M' + R(wX + 31) + " " + R(beltY - 1) + " L" + R(wX + 33) + " " + R(beltY - 10) + " Q" + R(wX + 38) + " " + R(beltY - 13) + " " + R(wX + 43) + " " + R(beltY - 10) + " L" + R(wX + 44) + " " + R(beltY - 1) + ' Z" fill="#2e353e"/>';
+  }
+  /* ---- サイドガラス ---- */
+  s += '<path d="' + g + '" fill="url(#' + gid + 'g)" stroke="#49545f" stroke-width="1.3" stroke-linejoin="round"/>';
+  /* ---- フロントガラス（正面側の面：幅を持たせ、上下端をボンネット／ルーフ上面と接続） ---- */
+  if (!isOpen && !isTruck){
+    var wAx = hX, wAy = hY - 2, wBx = wX, wBy = roofY + 3;
+    var wCx = wX - faceW * 0.40, wCy = roofY - 1, wDx = hoodFarX, wDy = hoodFarY;
+    var wsp;
+    if (isWedge) wsp = "M" + R(wDx) + " " + R(wDy) + " L" + R(wAx) + " " + R(wAy) + " Q" + R(hX - 1) + " " + R(hY + 1) + " " + R(wBx) + " " + R(wBy) + " L" + R(wCx) + " " + R(wCy) + " Z";
+    else wsp = "M" + R(wDx) + " " + R(wDy) + " L" + R(wAx) + " " + R(wAy) + " L" + R(wBx) + " " + R(wBy) + " L" + R(wCx) + " " + R(wCy) + " Z";
+    s += '<path d="' + wsp + '" fill="url(#' + gid + 'g)" stroke="#49545f" stroke-width="1.1" stroke-linejoin="round"/>';
+    var hbx = wDx + (wAx - wDx) * 0.38, hby = wDy + (wAy - wDy) * 0.38;
+    var htx = wCx + (wBx - wCx) * 0.38, hty = wCy + (wBy - wCy) * 0.38;
+    s += '<path d="M' + R(hbx) + " " + R(hby) + " L" + R(htx) + " " + R(hty) + '" stroke="rgba(255,255,255,.38)" stroke-width="3.5" stroke-linecap="round" fill="none"/>';
+  }
+  s += '<g clip-path="url(#' + gid + 'v)">';
+  s += '<path d="M' + R(gFX + 6) + " " + R(roofY) + " L" + R(gFX + 24) + " " + R(roofY) + " L" + R(gFX + 12) + " " + R(beltY) + " L" + R(gFX) + " " + R(beltY) + ' Z" fill="rgba(255,255,255,.5)"/>';
+  s += '<path d="M' + R(gFX + 34) + " " + R(roofY) + " L" + R(gFX + 44) + " " + R(roofY) + " L" + R(gFX + 34) + " " + R(beltY) + " L" + R(gFX + 26) + " " + R(beltY) + ' Z" fill="rgba(255,255,255,.28)"/>';
+  if (!isOpen && !isTruck) s += '<line x1="' + R(bpX) + '" y1="' + R(roofY + 5) + '" x2="' + R(bpX) + '" y2="' + R(beltY) + '" stroke="#49545f" stroke-width="3"/>';
+  if (has("glass3")){
+    var g3x = gFX + (gBotRX - gFX) * 0.7;
+    s += '<line x1="' + R(g3x) + '" y1="' + R(roofY + 7) + '" x2="' + R(g3x) + '" y2="' + R(beltY) + '" stroke="#49545f" stroke-width="2.6"/>';
+  }
+  s += '</g>';
+  // ドアミラー
+  s += '<rect x="' + R(hX - 2) + '" y="' + R(beltY - 4) + '" width="5" height="3" fill="#39424d"/>';
+  s += '<ellipse cx="' + R(hX - 5) + '" cy="' + R(beltY - 6) + '" rx="6.8" ry="4.4" transform="rotate(-10 ' + R(hX - 5) + " " + R(beltY - 6) + ')" fill="#39424d" stroke="#2b333c" stroke-width="1"/>';
+  /* ---- パネルライン・ハンドル ---- */
+  var lineC = 'stroke="rgba(35,45,56,.38)" stroke-width="1.1" fill="none"';
+  if (isTruck){
+    s += '<path d="M' + R(glassRX + 1) + " " + R(beltY + 2) + " L" + R(glassRX + 1) + " " + R(botY - 3) + '" ' + lineC + '/>';
+    s += '<rect x="' + R(bpX - 15) + '" y="' + R(beltY + 6) + '" width="9.5" height="2.8" rx="1.4" fill="rgba(30,40,52,.5)"/>';
+    var bedRX = glassRX + 3;
+    s += '<line x1="' + R(bedRX) + '" y1="' + R(GY - 0.98 * PXM + 1) + '" x2="' + R(x2 - 1) + '" y2="' + R(GY - 0.98 * PXM + 1) + '" stroke="rgba(35,45,56,.4)" stroke-width="1.4"/>';
+    [0.34, 0.67].forEach(function(fr2){
+      var px = bedRX + (x2 - bedRX) * fr2;
+      s += '<line x1="' + R(px) + '" y1="' + R(GY - 0.98 * PXM + 2) + '" x2="' + R(px) + '" y2="' + R(botY - 2) + '" stroke="rgba(35,45,56,.22)" stroke-width="1.2"/>';
+    });
+  } else if (!isOpen){
+    s += '<path d="M' + R(bpX + 2) + " " + R(beltY + 2) + " L" + R(bpX + 1) + " " + R(botY - 3) + '" ' + lineC + '/>';
+    s += '<rect x="' + R(bpX - 15) + '" y="' + R(beltY + 6) + '" width="9.5" height="2.8" rx="1.4" fill="rgba(30,40,52,.5)"/>';
+    if (!has("twodoor") && !has("panel")){
+      var rdX = gx2 + (x2 - gx2) * 0.25;
+      s += '<path d="M' + R(rdX) + " " + R(beltY + 2) + " L" + R(rdX - 1) + " " + R(botY - 3) + '" ' + lineC + '/>';
+      var rhx = bpX + (gx2 - bpX) * 0.45;
+      s += '<rect x="' + R(rhx) + '" y="' + R(beltY + 6) + '" width="9.5" height="2.8" rx="1.4" fill="rgba(30,40,52,.5)"/>';
+    }
+    if (has("slide")){
+      if (has("panel")){
+        s += '<line x1="' + R(glassRX + 8) + '" y1="' + R(beltY + 10) + '" x2="' + R(x2 - 8) + '" y2="' + R(beltY + 10) + '" stroke="rgba(35,45,56,.30)" stroke-width="1.6"/>';
+        [0.55, 0.8].forEach(function(fr2){
+          var px2 = glassRX + (x2 - glassRX) * fr2;
+          s += '<line x1="' + R(px2) + '" y1="' + R(roofY + 8) + '" x2="' + R(px2) + '" y2="' + R(botY - 3) + '" stroke="rgba(35,45,56,.20)" stroke-width="1.2"/>';
+        });
+      } else {
+        s += '<line x1="' + R(bpX + 7) + '" y1="' + R(beltY + 10) + '" x2="' + R(Math.min(gx2 + 15, x2 - 5)) + '" y2="' + R(beltY + 10) + '" stroke="rgba(35,45,56,.30)" stroke-width="1.6"/>';
+      }
+    }
+  } else {
+    s += '<path d="M' + R(wX + 48) + " " + R(beltY + 2) + " L" + R(wX + 47) + " " + R(botY - 3) + '" ' + lineC + '/>';
+    s += '<rect x="' + R(wX + 33) + '" y="' + R(beltY + 5) + '" width="9.5" height="2.8" rx="1.4" fill="rgba(30,40,52,.5)"/>';
+  }
+  if (has("rails") && !isOpen){
+    s += '<line x1="' + R(wX + 8) + '" y1="' + R(roofY - 3) + '" x2="' + R(rX - 10) + '" y2="' + R(roofY - 3 + rs) + '" stroke="#22282f" stroke-width="2.6" stroke-linecap="round"/>';
+  }
+  if (has("scoop")){
+    var scX = hX - 24, scY = hY - 2;
+    s += '<path d="M' + R(scX) + " " + R(scY) + " Q" + R(scX + 2) + " " + R(scY - 6.5) + " " + R(scX + 9) + " " + R(scY - 7.5) + " L" + R(scX + 17) + " " + R(scY - 6.5) + " Q" + R(scX + 19) + " " + R(scY - 3) + " " + R(scX + 18) + " " + R(scY) + ' Z" fill="' + shade(hex, 16) + '" stroke="#49545f" stroke-width="1.1"/>';
+    s += '<path d="M' + R(scX + 4) + " " + R(scY - 3.8) + " L" + R(scX + 15) + " " + R(scY - 4.4) + '" stroke="rgba(10,15,20,.75)" stroke-width="2.2" fill="none"/>';
+  }
+  /* ---- リアウイング ---- */
+  if (has("bigwing") || has("wing2")){
+    var wTopY = beltY - 17, wX2 = x2 - 4;
+    s += '<rect x="' + R(wX2 - 20) + '" y="' + R(wTopY + 4) + '" width="3.4" height="13" fill="#1d232b"/>';
+    s += '<rect x="' + R(wX2 - 8) + '" y="' + R(wTopY + 4) + '" width="3.4" height="13" fill="#1d232b"/>';
+    s += '<path d="M' + R(wX2 - 27) + " " + R(wTopY) + " L" + R(wX2 + 7) + " " + R(wTopY - 1.5) + " L" + R(wX2 + 8) + " " + R(wTopY + 4.5) + " L" + R(wX2 - 26) + " " + R(wTopY + 6) + ' Z" fill="#1d232b"/>';
+  } else if (has("wing")){
+    var wTopY1 = beltY - 12, wX3 = x2 - 4;
+    s += '<rect x="' + R(wX3 - 10) + '" y="' + R(wTopY1 + 3) + '" width="3.2" height="9" fill="#1d232b"/>';
+    s += '<path d="M' + R(wX3 - 19) + " " + R(wTopY1) + " L" + R(wX3 + 5) + " " + R(wTopY1 - 1) + " L" + R(wX3 + 6) + " " + R(wTopY1 + 3.5) + " L" + R(wX3 - 18) + " " + R(wTopY1 + 4.5) + ' Z" fill="#1d232b"/>';
+  }
+  /* ---- 近側ヘッドライト／テールランプ ---- */
+  s += headlightSVG([R(x1 - 10), R(noseY + 9), sp.hl]);
+  if (isTruck){
+    s += '<rect x="' + R(x2 - 5) + '" y="' + R(botY - 13) + '" width="4.5" height="10" rx="2" fill="#d8453a" stroke="rgba(90,20,20,.4)" stroke-width="0.8"/>';
+  } else if (A.rt === "box" || A.rt === "hatch"){
+    s += '<rect x="' + R(x2 - 4.5) + '" y="' + R(beltY - 13) + '" width="4.5" height="12" rx="2" fill="#d8453a" stroke="rgba(90,20,20,.4)" stroke-width="0.8"/>';
+  } else {
+    s += '<rect x="' + R(x2 - 11) + '" y="' + R(beltY - 1) + '" width="10" height="4.4" rx="2" fill="#d8453a" stroke="rgba(90,20,20,.4)" stroke-width="0.8"/>';
+  }
+  /* ---- ホイールアーチ＋ホイール ---- */
+  var archF = has("clad") ? "#252d35" : "#141a20";
+  s += '<circle cx="' + R(fwX) + '" cy="' + R(GY - fwR) + '" r="' + R(fwR + 3.5) + '" fill="' + archF + '"/>';
+  s += '<circle cx="' + R(rwX) + '" cy="' + R(GY - rwR) + '" r="' + R(rwR + 3.5) + '" fill="' + archF + '"/>';
+  s += wheelSVG(R(fwX), R(GY - fwR), fwR);
+  s += wheelSVG(R(rwX), R(GY - rwR), rwR);
+  s += '</svg>';
+  return s;
+}
+
+function condBar(lb, v){
+  var col = v >= 70 ? "var(--good)" : v >= 45 ? "var(--warn)" : "var(--bad)";
+  return '<div class="condbar"><span style="width:34px">' + lb + '</span><span class="bar"><i style="width:' + v + '%;background:' + col + '"></i></span><b class="num">' + v + '</b></div>';
+}
+function carCard(c, opts){
+  opts = opts || {};
+  var val = carValue(c);
+  var total = c.cost + c.serviceCost;
+  var margin = c.askPrice - total;
+  var html = '<div class="card carcard">';
+  html += '<div class="car-visual" style="background:linear-gradient(135deg,' + (CAT_COLOR[c.cat]||"#43617e") + ',#22303e)">' +
+    '<div><div class="nm">' + esc(c.mk) + ' ' + esc(c.nm) + '</div><span class="cat">' + esc(bodyOf(c)) + '｜' + esc(c.grade) + '</span></div>' + carSVG(c) + '</div>';
+  html += '<div class="spec"><span class="tag">' + esc(bodyOf(c)) + '</span><span>' + esc(c.cat) + '</span><span>' + c.year + '年式</span><span>' + kmf(c.km) + '</span><span>' + esc(c.color) + '</span><span>車検 ' + (c.inspect>0 ? "残" + c.inspect + "か月" : "切れ") + '</span>' +
+    (c.repair ? '<span class="tag bad">修復歴あり</span>' : '<span class="tag good">修復歴なし</span>') +
+    (c.rare >= 4 ? '<span class="tag warn">希少 ' + c.rare + '</span>' : '') +
+    (c.status === "service" ? '<span class="tag warn">整備中</span>' : '') +
+    (c.days >= 45 ? '<span class="tag bad">長期在庫 ' + c.days + '日</span>' : '') + '</div>';
+  html += condBar("外装", c.ext) + condBar("内装", c.int) + condBar("機関", c.mech);
+  html += '<div class="price-row"><span class="ask num">' + man(c.askPrice) + '</span>' +
+    '<span class="small muted">相場 ' + man(val) + '｜原価計 ' + man(total) + '</span>' +
+    '<span class="small ' + (margin >= 0 ? "pos" : "neg2") + '">見込粗利 ' + (margin>=0?"+":"") + man(margin) + '</span></div>';
+  html += '<div class="row">' +
+    '<button class="btn sm pri" data-act="car-detail" data-id="' + c.id + '">詳細・整備・価格</button>' +
+    '<button class="btn sm" data-act="dealer-sell" data-id="' + c.id + '">業者売却 ' + man(Math.round(val*0.68/1000)*1000) + '</button>' +
+    '<span class="sp"></span><span class="tiny muted">在庫' + c.days + '日</span></div>';
+  html += '</div>';
+  return html;
+}
+
+function render(){
+  ensureCareers();
+  var app = document.getElementById("app");
+  if (!UI.started || !G){ app.innerHTML = viewTitle(); bindTitle(); return; }
+  var html = "";
+  // header
+  var fixed = monthlyFixed();
+  html += '<header class="top"><div class="top-in">' +
+    '<div class="ttl">USED CAR EMPIRE<small>' + esc(G.shopName) + '｜' + rankName(netWorth()) + '</small></div>' +
+    '<div class="stats num">' +
+    '<span>📅 ' + dateStr(G.day) + '</span>' +
+    '<span>現金 <b class="' + (G.cash < 0 ? "neg" : "") + '">' + man(G.cash) + '</b></span>' +
+    (G.loan > 0 ? '<span>借入 <b>' + man(G.loan) + '</b></span>' : '') +
+    '<span>在庫 <b>' + G.inventory.length + '/' + stockCap() + '</b></span>' +
+    '<span>評判 <span class="repbar"><i style="width:' + G.rep + '%"></i></span> <b>' + Math.round(G.rep) + '</b></span>' +
+    (activeClaims().length ? '<button class="claim-badge" data-act="claim-goto">📞 クレーム ' + activeClaims().length + '件 未対応</button>' : '') +
+    '<button class="daybtn" data-act="next-day">▶ 次の日へ</button>' +
+    '</div></div></header>';
+  // nav
+  var tabs = [
+    ["dash","ダッシュボード", activeClaims().length], ["stock","在庫", 0], ["buy","仕入れ", 0],
+    ["nego","商談", G.visitors.filter(function(v){ return v.carId; }).length],
+    ["staff","従業員", 0], ["shop","店舗・設備", 0], ["fin","財務", 0],
+    ["market","相場", 0], ["news","ニュース", G.claims.filter(function(c){ return c.active && !c.resolved; }).length],
+    ["ach","実績・顧客", 0], ["set","設定・セーブ", 0]
+  ];
+  html += '<nav class="tabs"><div class="tabs-in">' + tabs.map(function(t){
+    return '<button class="tab' + (UI.view === t[0] ? " on" : "") + '" data-act="tab" data-id="' + t[0] + '">' + t[1] + (t[2] ? '<span class="bdg">' + t[2] + '</span>' : '') + '</button>';
+  }).join("") + '</div></nav>';
+  if (activeClaims().length) html += '<div class="claim-banner"><div class="claim-banner-in"><b>📞 未対応のクレームが ' + activeClaims().length + '件あります</b><span class="small">販売した車両の不具合対応が待っています。放置したまま日を進めることもできますが、対応はお早めに。</span><span class="sp"></span><button class="btn sm pri" data-act="claim-goto">対応する</button></div></div>';
+  html += '<main>';
+  if (G.gameOver) html += viewGameOver();
+  else if (UI.view === "dash") html += viewDash();
+  else if (UI.view === "stock") html += viewStock();
+  else if (UI.view === "buy") html += viewBuy();
+  else if (UI.view === "nego") html += viewNego();
+  else if (UI.view === "staff") html += viewStaff();
+  else if (UI.view === "shop") html += viewShop();
+  else if (UI.view === "fin") html += viewFin();
+  else if (UI.view === "market") html += viewMarket();
+  else if (UI.view === "news") html += viewNews();
+  else if (UI.view === "ach") html += viewAch();
+  else if (UI.view === "set") html += viewSet();
+  html += '</main><footer class="note">車両価格・相場は実在車種の傾向を参考にしたゲーム用の推定値です。実在の取引価格とは異なります。セーブはこの端末のブラウザに自動保存されます。</footer>';
+  app.innerHTML = html;
+}
+
+/* ---------- タイトル ---------- */
+var NG = { name:"", diff:1, region:0, spec:0 };
+function viewTitle(){
+  var sv = hasSave();
+  var h = '<main style="padding-top:26px"><div class="hero"><h1>USED CAR EMPIRE</h1>' +
+    '<p style="font-size:16px;font-weight:700;opacity:1">— 中古車王への道 —</p>' +
+    '<p>小さな中古車販売店からスタートし、仕入れ・整備・商談・資金繰りを乗り越えて総資産1億円の「中古車王」を目指す経営シミュレーション。</p>' +
+    '<p>オークションで目利きし、相場を読み、クレームに誠実に対応する。判断の積み重ねが会社を育てる。</p><p>登場車種：全' + MODELS.length + '車種（セダン／ハッチバック／ミニバン／SUV／軽トラックなど種別つき・車種ごとに専用イラスト）</p></div>';
+  if (sv) h += '<div class="card" style="margin-top:14px"><div class="row"><div><b>セーブデータがあります</b><div class="small muted">前回の経営状態から再開できます</div></div><span class="sp"></span>' +
+    '<button class="btn acc" id="btn-continue">▶ つづきから始める</button>' +
+    '<button class="btn dgr" id="btn-wipe">セーブを削除</button></div></div>';
+  h += '<div class="card" style="margin-top:14px"><h3 style="margin-top:0">新規ゲーム</h3>' +
+    '<div class="field"><label>店舗名</label><input type="text" id="ng-name" placeholder="例：モータースさくら" value="' + esc(NG.name) + '" maxlength="20"></div>' +
+    '<div class="field"><label>難易度</label><div class="seg" id="ng-diff">' + DIFFS.map(function(d,i){ return '<button data-i="' + i + '" class="' + (NG.diff===i?"on":"") + '">' + d.nm + '</button>'; }).join("") + '</div>' +
+    '<div class="small muted" style="margin-top:4px">' + DIFFS[NG.diff].desc + '（初期資金 ' + man(DIFFS[NG.diff].cash) + '）</div></div>' +
+    '<div class="field"><label>出店地域</label><div class="seg" id="ng-region">' + REGIONS.map(function(r,i){ return '<button data-i="' + i + '" class="' + (NG.region===i?"on":"") + '">' + r.nm + '</button>'; }).join("") + '</div>' +
+    '<div class="small muted" style="margin-top:4px">' + REGIONS[NG.region].desc + '（家賃 月' + man(REGIONS[NG.region].rent) + '）</div></div>' +
+    '<div class="field"><label>経営方針・専門分野</label><div class="seg" id="ng-spec">' + SPECIALTIES.map(function(s,i){ return '<button data-i="' + i + '" class="' + (NG.spec===i?"on":"") + '">' + s.nm + '</button>'; }).join("") + '</div>' +
+    '<div class="small muted" style="margin-top:4px">' + SPECIALTIES[NG.spec].desc + '</div></div>' +
+    '<button class="btn acc" id="btn-start" style="font-size:15px;padding:11px 22px">🚗 この条件で開店する</button>' +
+    '<p class="small muted">遊び方：①仕入れ（オークション／買取／業者）→ ②在庫で整備と価格設定 → ③来店客と商談 → ④「次の日へ」で時間が進み、来店・相場変動・イベントが発生します。月末に家賃・給料が引かれるので資金繰りに注意。</p></div></main>';
+  return h;
+}
+function bindTitle(){
+  function seg(id, key){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("click", function(e){
+      var b = e.target.closest("button"); if (!b) return;
+      NG[key] = parseInt(b.getAttribute("data-i"), 10); render();
+    });
+  }
+  seg("ng-diff","diff"); seg("ng-region","region"); seg("ng-spec","spec");
+  var nm = document.getElementById("ng-name");
+  if (nm) nm.addEventListener("change", function(){ NG.name = nm.value; });
+  var st = document.getElementById("btn-start");
+  if (st) st.addEventListener("click", function(){
+    var nameEl = document.getElementById("ng-name");
+    newGame({ name: nameEl ? nameEl.value.trim() : "", diff: NG.diff, region: NG.region, spec: NG.spec });
+  });
+  var ct = document.getElementById("btn-continue");
+  if (ct) ct.addEventListener("click", function(){
+    var d = loadSave();
+    if (d){ G = d; UI.started = true; UI.view = "dash"; render(); toast("セーブデータを読み込みました"); }
+    else toast("セーブデータを読み込めませんでした");
+  });
+  var wp = document.getElementById("btn-wipe");
+  if (wp) wp.addEventListener("click", function(){
+    if (confirmInPage("セーブデータを削除しますか？", function(){ wipeSave(); render(); })) return;
+  });
+}
+
+/* ---------- ダッシュボード ---------- */
+function viewDash(){
+  var f = G.fin, fixed = monthlyFixed();
+  var gross = f.sales - f.cogs;
+  var op = gross - f.service - f.ads - f.transport - f.warranty - f.fees;
+  var stockVal = G.inventory.reduce(function(s,c){ return s + carValue(c); }, 0);
+  var nw = netWorth();
+  var activeClaims = G.claims.filter(function(c){ return c.active && !c.resolved; });
+  var h = '<h2 class="vt">経営ダッシュボード <small>' + monthLabel(G.day) + 'の経営状況｜月末固定費見込 ' + man(fixed.total + Math.round(G.loan*0.006)) + '（家賃・給料・利息）</small></h2>';
+  if (G.cash < 500000) h += '<div class="alertbox red" style="margin-bottom:12px">⚠️ 現金残高が ' + man(G.cash) + ' まで低下しています。月末の固定費 ' + man(fixed.total) + ' を支払えないと倒産します。業者売却で在庫を現金化するか、借入を検討してください。</div>';
+  if (activeClaims.length) h += '<div id="claims-anchor"></div>';
+  activeClaims.forEach(function(cl){
+    h += '<div class="alertbox" style="margin-bottom:10px">📞 <b>クレーム対応待ち</b>：' + esc(cl.buyer) + ' の ' + esc(cl.carName) + '（修理見込 ' + man(cl.cost) + '）' +
+      '<div class="row" style="margin-top:8px"><button class="btn sm pri" data-act="claim" data-id="' + cl.id + '" data-mode="full">無償修理する</button>' +
+      '<button class="btn sm" data-act="claim" data-id="' + cl.id + '" data-mode="half">修理費の一部を負担</button>' +
+      '<button class="btn sm dgr" data-act="claim" data-id="' + cl.id + '" data-mode="deny">対応を断る</button></div></div>';
+  });
+  h += '<div class="grid g4 kpi-grid">' +
+    kpi("現金残高", man(G.cash), "借入残高 " + man(G.loan)) +
+    kpi("総資産（現金＋在庫−借入）", man(nw), rankName(nw)) +
+    kpi("今月の売上", man(f.sales), "販売 " + countThisMonth() + "台") +
+    kpi("今月の営業利益（固定費前）", '<span class="' + (op>=0?"pos":"neg2") + '">' + man(op) + '</span>', "粗利 " + man(gross) + "／整備費 " + man(f.service)) +
+    kpi("在庫評価額", man(stockVal), G.inventory.length + "台（上限 " + stockCap() + "台）") +
+    kpi("累計販売台数", G.stats.soldCount + "台", "成約率 " + negoRate() + "%") +
+    kpi("店舗の評判", Math.round(G.rep) + " / 100", "広告：" + AD_PLANS[G.adPlan].nm) +
+    kpi("市場環境", "ガソリン " + G.fuel + "円/L", "景気指数 " + Math.round(G.economy*100) + "｜在庫平均 " + avgDays() + "日") +
+    '</div>';
+  // 目標
+  var rankNext = nw < 15000000 ? 15000000 : nw < 30000000 ? 30000000 : nw < 60000000 ? 60000000 : nw < 100000000 ? 100000000 : 100000000;
+  h += '<div class="grid g2" style="margin-top:12px"><div class="card"><h3 style="margin:0 0 8px">🎯 目標：中古車王（総資産1億円）</h3>' +
+    '<div class="prog"><i style="width:' + clamp(nw/100000000*100, 0, 100) + '%"></i></div>' +
+    '<div class="small muted" style="margin-top:6px">現在 ' + man(nw) + '｜次のランク「' + rankName(rankNext) + '」まで ' + man(Math.max(0, rankNext - nw)) + '</div>' +
+    '<h3 style="margin:12px 0 6px">経営の基本サイクル</h3><ul class="check" style="margin:0;padding-left:20px">' +
+    '<li class="' + (G.tutorial.buy ? "done" : "") + '">' + (G.tutorial.buy ? "✓" : "□") + ' 仕入れする（オークション／買取／業者間）</li>' +
+    '<li class="' + (G.tutorial.service ? "done" : "") + '">' + (G.tutorial.service ? "✓" : "□") + ' 在庫車を整備して商品化する</li>' +
+    '<li class="' + (G.tutorial.price ? "done" : "") + '">' + (G.tutorial.price ? "✓" : "□") + ' 販売価格を見直す</li>' +
+    '<li class="' + (G.tutorial.sale ? "done" : "") + '">' + (G.tutorial.sale ? "✓" : "□") + ' 商談で成約する</li>' +
+    '<li class="' + (G.goal30done ? "done" : "") + '">' + (G.goal30done ? "✓" : "□") + ' 最初の30日間を黒字で終える（' + Math.min(G.day,30) + '/30日）</li></ul></div>';
+  // 月次グラフ
+  h += '<div class="card"><h3 style="margin:0 0 8px">📊 月別 収益 vs 出費</h3>' + pairedChart(finSeries().slice(-6), 140) +
+    '<div class="small muted">緑＝売上、橙＝出費（原価・整備・広告・固定費・利息など）。当月は固定費を月末計上する前の速報です。詳しくは「財務」タブへ。</div></div></div>';
+  // 来店客サマリー
+  var vs = G.visitors.filter(function(v){ return v.carId; });
+  h += '<h3 class="st">本日の来店客（' + G.visitors.length + '組）</h3>';
+  if (!G.visitors.length) h += '<div class="card small muted">本日の来店はまだありません。「次の日へ」を押すと来店客・相場変動・イベントが発生します。広告プランや評判で来店数が変わります。</div>';
+  else h += '<div class="grid g3">' + G.visitors.map(function(v){ return visitorCard(v, true); }).join("") + '</div>';
+  // 最新ニュース
+  h += '<h3 class="st">最新のニュース</h3><div class="card">' + G.news.slice(0, 5).map(newsItem).join("") + '</div>';
+  return h;
+}
+function kpi(lb, vl, sub){ return '<div class="card kpi"><div class="lb">' + lb + '</div><div class="vl num">' + vl + '</div><div class="sub">' + sub + '</div></div>'; }
+function countThisMonth(){
+  // sold リストではなく customers の当月分で概算（day から月を判定）
+  var mk = monthKey(G.day);
+  return G.customers.filter(function(c){ return monthKey(c.day) === mk; }).length;
+}
+function negoRate(){ var t = G.stats.negoWin + G.stats.negoLose; return t ? Math.round(G.stats.negoWin / t * 100) : 0; }
+function avgDays(){ if (!G.inventory.length) return 0; return Math.round(G.inventory.reduce(function(s,c){ return s + c.days; },0) / G.inventory.length); }
+function monthChart(){
+  var rows = G.monthHist.slice(-7);
+  var f = G.fin; var cur = (f.sales - f.cogs - f.service - f.ads - f.transport - f.warranty - f.fees);
+  var data = rows.map(function(r){ return { l: r.label.replace(/^\d+年/,""), v: r.profit }; });
+  data.push({ l: "当月", v: cur });
+  var max = Math.max.apply(null, data.map(function(d){ return Math.abs(d.v); }).concat([100000]));
+  var w = 300, hh = 96, bw = Math.floor(w / data.length) - 8;
+  var svg = '<svg viewBox="0 0 ' + w + ' ' + (hh + 18) + '" style="width:100%;max-width:430px">';
+  svg += '<line x1="0" y1="' + (hh/2) + '" x2="' + w + '" y2="' + (hh/2) + '" stroke="var(--line)"/>';
+  data.forEach(function(d, i){
+    var bh = Math.max(2, Math.abs(d.v) / max * (hh/2 - 4));
+    var x = i * (bw + 8) + 4;
+    var y = d.v >= 0 ? hh/2 - bh : hh/2;
+    svg += '<rect x="' + x + '" y="' + y + '" width="' + bw + '" height="' + bh + '" rx="2" fill="' + (d.v >= 0 ? "var(--good)" : "var(--bad)") + '"/>';
+    svg += '<text x="' + (x + bw/2) + '" y="' + (hh + 13) + '" font-size="8.5" text-anchor="middle" fill="var(--muted)">' + d.l + '</text>';
+  });
+  return svg + '</svg>';
+}
+function newsItem(n){
+  var ic = n.kind === "good" ? "🟢" : n.kind === "bad" ? "🔴" : "🔵";
+  return '<div class="news-item"><div class="small"><b>' + ic + ' ' + esc(n.title) + '</b> <span class="muted">' + esc(n.date) + '</span></div><div class="small">' + esc(n.body) + '</div></div>';
+}
+function visitorCard(v, compact){
+  var car = v.carId ? findCar(v.carId) : null;
+  var h = '<div class="card"><div class="row"><b>' + esc(v.name) + '</b><span class="tag">' + esc(v.type) + '</span></div>' +
+    '<div class="small muted">' + esc(v.desc) + '</div>' +
+    '<div class="kv"><span>予算</span><b class="num">' + man(v.budget) + '</b></div>' +
+    '<div class="kv"><span>希望</span><b>' + (v.wantCat || "指定なし") + '</b></div>' +
+    '<div class="kv"><span>許容走行</span><b class="num">' + kmf(v.kmMax) + 'まで</b></div>';
+  if (car) h += '<div class="small" style="margin-top:6px">注目車両：<b>' + esc(car.mk) + ' ' + esc(car.nm) + '</b>（' + man(car.askPrice) + '）</div>' +
+    '<button class="btn acc sm" style="margin-top:8px" data-act="nego-open" data-id="' + v.id + '">商談する</button>';
+  else h += '<div class="small muted" style="margin-top:6px">希望に合う在庫がありません</div>';
+  return h + '</div>';
+}
+function viewGameOver(){
+  var nw = netWorth();
+  return '<div class="card" style="text-align:center;padding:30px"><h2>🏚️ 店舗を閉めることになりました</h2>' +
+    '<p>経営 ' + G.day + '日目で資金繰りが限界に達しました。</p>' +
+    '<p>累計販売 ' + G.stats.soldCount + '台｜到達した総資産 ' + man(nw) + '｜最終ランク「' + rankName(nw) + '」</p>' +
+    '<p class="small muted">振り返り：仕入れ単価と在庫回転率、月末の固定費（家賃＋給料）が経営の鍵です。安く仕入れて早く売る、を徹底すると安定します。</p>' +
+    '<button class="btn acc" data-act="restart">新しい店舗で再挑戦する</button></div>';
+}
+/* ---------- 在庫 ---------- */
+function viewStock(){
+  var list = G.inventory.slice();
+  if (UI.sortStock === "price") list.sort(function(a,b){ return b.askPrice - a.askPrice; });
+  else if (UI.sortStock === "value") list.sort(function(a,b){ return carValue(b) - carValue(a); });
+  else if (UI.sortStock === "km") list.sort(function(a,b){ return a.km - b.km; });
+  else list.sort(function(a,b){ return b.days - a.days; });
+  var h = '<h2 class="vt">在庫一覧 <small>' + list.length + '台／上限 ' + stockCap() + '台｜在庫評価額 ' + man(list.reduce(function(s,c){ return s + carValue(c); },0)) + '</small></h2>';
+  h += '<div class="row" style="margin-bottom:12px"><span class="small muted">並び替え：</span><div class="seg">' +
+    [["days","在庫日数"],["price","販売価格"],["value","相場"],["km","走行距離"]].map(function(o){ return '<button data-act="sort" data-id="' + o[0] + '" class="' + (UI.sortStock===o[0]?"on":"") + '">' + o[1] + '</button>'; }).join("") + '</div>' +
+    '<span class="sp"></span><button class="btn pri" data-act="tab" data-id="buy">＋ 仕入れへ</button></div>';
+  if (!list.length) h += '<div class="card muted">在庫がありません。「仕入れ」から車両を調達しましょう。</div>';
+  else h += '<div class="grid g3">' + list.map(function(c){ return carCard(c); }).join("") + '</div>';
+  return h;
+}
+
+/* ---------- 仕入れ ---------- */
+function viewBuy(){
+  var h = '<h2 class="vt">仕入れ <small>登場車種 全' + MODELS.length + '車種｜オークションは3日ごとに更新｜査定スタッフ能力 ' + staffSkill("appr") + '（落札精度・相場の見極めに影響）</small></h2>';
+  // オークション
+  h += '<h3 class="st">🔨 業者オークション</h3><div class="grid g3">';
+  h += G.auction.map(function(lot, i){
+    var c = lot.car;
+    var appr = staffSkill("appr");
+    var hint = appr >= 60 ? "落札目安 約" + man(lot.expected) : appr >= 35 ? "落札目安 " + man(lot.expected*0.9) + "〜" + man(lot.expected*1.1) : "査定スタッフを雇うと目安が見えてくる";
+    var score = (c.ext + c.int + c.mech) / 30;
+    var card = '<div class="card carcard"><div class="car-visual" style="background:linear-gradient(135deg,' + (CAT_COLOR[c.cat]||"#43617e") + ',#22303e)"><div><div class="nm">' + esc(c.mk) + ' ' + esc(c.nm) + '</div><span class="cat">' + esc(bodyOf(c)) + '｜評価点 ' + score.toFixed(1) + '</span></div>' + carSVG(c) + '</div>' +
+      '<div class="spec"><span class="tag">' + esc(bodyOf(c)) + '</span><span>' + c.year + '年式</span><span>' + kmf(c.km) + '</span><span>' + esc(c.color) + '</span><span>車検 残' + c.inspect + 'か月</span>' + (c.repair ? '<span class="tag bad">修復歴あり</span>' : '') + '</div>' +
+      condBar("外装", c.ext) + condBar("内装", c.int) + condBar("機関", c.mech) +
+      '<div class="small">相場 ' + man(carValue(c, true)) + '｜開始価格 ' + man(lot.start) + '｜競合 ' + lot.rivals + '社<br><span class="muted">' + hint + '。落札時は手数料3%＋陸送費1.5万円。写真では分からない不具合が隠れている場合があります。</span></div>';
+    if (lot.done) card += '<div class="tag">本日の入札終了</div>';
+    else card += '<div class="row"><input type="number" id="bid-' + i + '" value="' + Math.round(lot.expected/10000) + '" min="1" style="width:92px;padding:7px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)"><span class="small">万円で</span><button class="btn acc sm" data-act="bid" data-id="' + i + '">入札する</button></div>';
+    return card + '</div>';
+  }).join("") + '</div>';
+  // 買取
+  h += '<h3 class="st">🤝 一般客からの買取申込</h3><div class="grid g3">';
+  h += G.buyOffers.map(function(o, i){
+    var c = o.car;
+    var card = '<div class="card carcard"><div class="car-visual" style="background:linear-gradient(135deg,' + (CAT_COLOR[c.cat]||"#43617e") + ',#22303e)"><div><div class="nm">' + esc(c.mk) + ' ' + esc(c.nm) + '</div><span class="cat">' + esc(bodyOf(c)) + '｜' + esc(c.grade) + '</span></div>' + carSVG(c) + '</div>' +
+      '<div class="spec"><span class="tag">' + esc(bodyOf(c)) + '</span><span>' + c.year + '年式</span><span>' + kmf(c.km) + '</span><span>' + esc(c.color) + '</span>' + (c.repair ? '<span class="tag bad">修復歴あり</span>' : '<span class="tag good">修復歴なし</span>') + '</div>' +
+      condBar("外装", c.ext) + condBar("内装", c.int) + condBar("機関", c.mech) +
+      '<div class="small">売主の希望額 <b class="num">' + man(o.hope) + '</b>｜標準査定 約' + man(carValue(c, true) * 0.86) + '<br><span class="muted">安すぎる提示は決裂しやすく、高すぎると利益が消えます。</span></div>';
+    if (o.done) card += '<div class="tag">交渉終了</div>';
+    else card += '<div class="row"><input type="number" id="buy-' + i + '" value="' + Math.round(o.hope * 0.92 / 10000) + '" min="1" style="width:92px;padding:7px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)"><span class="small">万円で</span><button class="btn acc sm" data-act="buyback" data-id="' + i + '">買取提示</button></div>';
+    return card + '</div>';
+  }).join("") + '</div>';
+  // 業者間
+  h += '<h3 class="st">🏢 業者間取引 <small style="font-weight:600;color:var(--muted)">取引実績 ' + G.dealerTrust + '件（実績が多いほど価格条件が改善）</small></h3><div class="grid g2">';
+  h += G.dealerCars.map(function(d, i){
+    var c = d.car;
+    var card = '<div class="card"><div class="row"><b>' + esc(c.mk) + ' ' + esc(c.nm) + '</b><span class="tag">' + esc(bodyOf(c)) + '</span><span class="tag">' + esc(d.dealer) + '</span><span class="sp"></span><b class="num">' + man(d.price) + '</b></div>' +
+      '<div class="detail-visual" style="margin:6px 0">' + carSVG(c) + '</div>' +
+      '<div class="spec"><span>' + c.year + '年式</span><span>' + kmf(c.km) + '</span><span>' + esc(c.grade) + '</span><span>相場 ' + man(carValue(c, true)) + '</span>' + (c.rare >= 4 ? '<span class="tag warn">希少車</span>' : '') + '</div>' +
+      '<div class="small muted">即決価格（陸送費1万円別）。確実に仕入れられる反面、オークションより割高なことが多い。</div>';
+    card += d.done ? '<div class="tag" style="margin-top:6px">購入済み</div>' : '<button class="btn pri sm" style="margin-top:8px" data-act="dealer-buy" data-id="' + i + '">この価格で仕入れる</button>';
+    return card + '</div>';
+  }).join("") + '</div>';
+  h += '<div class="row" style="margin-top:14px"><button class="btn" data-act="refresh-market">出品・申込を更新する（手数料 1万円）</button><span class="small muted">通常は3日ごとに自動更新されます</span></div>';
+  return h;
+}
+
+/* ---------- 商談一覧 ---------- */
+function viewNego(){
+  var h = '<h2 class="vt">商談・販売 <small>本日の来店客 ' + G.visitors.length + '組｜営業スタッフ能力 ' + staffSkill("sales") + '</small></h2>';
+  if (!G.visitors.length) h += '<div class="card muted">本日の来店客はいません。「次の日へ」で来店が発生します。広告プランの強化や評判アップで来店が増えます。</div>';
+  else h += '<div class="grid g3">' + G.visitors.map(function(v){ return visitorCard(v); }).join("") + '</div>';
+  h += '<h3 class="st">販売のコツ</h3><div class="card small">価格が相場より高いほど成約率は下がります。値引きは確実性を上げますが利益を削ります。下取りは在庫を増やしつつ成約率を上げる手段、オプション付帯は単価アップの手段です。顧客タイプ（予算・希望カテゴリ・許容走行距離）と車両の適合度が成約を左右します。</div>';
+  return h;
+}
+
+/* ---------- 車両詳細モーダル ---------- */
+function openCarDetail(id){
+  var c = findCar(id);
+  if (!c) return;
+  var val = carValue(c);
+  var total = c.cost + c.serviceCost;
+  var risk = Math.round(faultRisk(c) * 100);
+  var h = '<h3>' + esc(c.mk) + ' ' + esc(c.nm) + ' <span class="tag">' + esc(bodyOf(c)) + '</span> <span class="tag">' + esc(c.cat) + '</span></h3>' +
+    '<div class="detail-visual">' + carSVG(c) + '</div>' +
+    '<div class="grid g2"><div>' +
+    '<div class="kv"><span>種別（ボディタイプ）</span><b>' + esc(bodyOf(c)) + '</b></div>' +
+    '<div class="kv"><span>グレード</span><b>' + esc(c.grade) + '</b></div>' +
+    '<div class="kv"><span>年式／色</span><b>' + c.year + '年／' + esc(c.color) + '</b></div>' +
+    '<div class="kv"><span>走行距離</span><b class="num">' + c.km.toLocaleString() + 'km</b></div>' +
+    '<div class="kv"><span>燃費</span><b class="num">' + c.fuel + 'km/L</b></div>' +
+    '<div class="kv"><span>車検</span><b>' + (c.inspect > 0 ? "残" + c.inspect + "か月" : "切れ（車検整備が有効）") + '</b></div>' +
+    '<div class="kv"><span>修復歴</span><b>' + (c.repair ? "あり（相場にマイナス）" : "なし") + '</b></div>' +
+    '<div class="kv"><span>人気／希少／ブランド</span><b>' + c.pop + " / " + c.rare + " / " + c.br + '</b></div>' +
+    '<div class="kv"><span>装備</span><b class="small">' + c.equip.map(esc).join("、") + '</b></div>' +
+    '<div class="kv"><span>故障・クレームリスク</span><b class="' + (risk >= 35 ? "neg2" : "") + '">' + risk + '%</b></div>' +
+    '<div class="kv"><span>仕入経路</span><b>' + esc(c.via) + '</b></div></div><div>' +
+    condBar("外装", c.ext) + condBar("内装", c.int) + condBar("機関", c.mech) +
+    '<div class="kv" style="margin-top:8px"><span>現在の相場</span><b class="num">' + man(val) + '</b></div>' +
+    '<div class="kv"><span>仕入価格</span><b class="num">' + man(c.cost) + '</b></div>' +
+    '<div class="kv"><span>整備費累計</span><b class="num">' + man(c.serviceCost) + '</b></div>' +
+    '<div class="kv"><span>原価合計</span><b class="num">' + man(total) + '</b></div>' +
+    '<div class="kv"><span>推奨販売価格</span><b class="num">' + man(suggestPrice(c)) + '</b></div></div></div>';
+  // 価格設定
+  h += '<h3 class="st">販売価格の設定</h3><div class="row"><input type="number" id="price-in" value="' + Math.round(c.askPrice/10000) + '" min="1" style="width:110px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)"><span>万円</span>' +
+    '<button class="btn pri sm" data-act="set-price" data-id="' + c.id + '">価格を設定</button>' +
+    '<button class="btn sm" data-act="set-price-suggest" data-id="' + c.id + '">推奨価格にする</button>' +
+    '<span class="small ' + (c.askPrice - total >= 0 ? "pos" : "neg2") + '">見込粗利 ' + (c.askPrice-total>=0?"+":"") + man(c.askPrice - total) + '</span></div>' +
+    '<div class="small muted">相場比 ' + Math.round(c.askPrice / val * 100) + '%。相場より安いほど売れやすく、高いほど利益は増えますが滞留します。</div>';
+  // 整備
+  h += '<h3 class="st">整備・商品化' + (c.status === "service" ? ' <span class="tag warn">整備中（残り' + (c.serviceQueue[0] ? c.serviceQueue[0].left : 0) + '日）</span>' : '') + '</h3>';
+  if (G.fac.workshop) h += '<div class="small muted">自社整備工場あり：整備費30%オフ・品質アップ</div>';
+  h += '<div class="small muted" style="margin-bottom:8px">品質で費用と効果が変わります：格安＝標準の約6割（効果控えめ）／標準／高品質＝標準の約1.7倍（効果・満足度アップ）。費用は車両価格に応じて変動します。</div>' +
+    JOBS.map(function(j){
+      var std = jobCost(c, j, QUALITY[1]);
+      return '<div class="jobrow"><div class="row"><b>' + j.nm + '</b><span class="tag">' + j.days + '日</span><span class="sp"></span><span class="small muted">標準費用</span><b class="num">' + fmtPrice(std) + '</b></div>' +
+      '<div class="small muted">' + j.desc + '</div>' +
+      '<div class="qb">' + QUALITY.map(function(q, qi){ return '<button class="btn sm" ' + (c.status !== "stock" ? "disabled" : "") + ' data-act="service" data-id="' + c.id + '" data-job="' + j.id + '" data-q="' + qi + '">' + q.nm.split("（")[0] + ' ' + fmtPrice(jobCost(c, j, q)) + '</button>'; }).join("") + '</div></div>';
+    }).join("");
+  h += '<div class="row" style="margin-top:14px"><button class="btn" data-act="close-modal">閉じる</button><span class="sp"></span>' +
+    '<button class="btn dgr sm" data-act="dealer-sell" data-id="' + c.id + '">業者に売却して現金化</button></div>';
+  openModal(h);
+}
+
+/* ---------- 商談モーダル ---------- */
+function openNego(vId){
+  var v = null;
+  G.visitors.forEach(function(x){ if (x.id === vId) v = x; });
+  if (!v) return;
+  var car = v.carId ? findCar(v.carId) : null;
+  var stockOpts = G.inventory.filter(function(c){ return c.status === "stock"; });
+  var h = '<h3>商談：' + esc(v.name) + '（' + esc(v.type) + '）</h3>' +
+    '<div class="small muted">' + esc(v.desc) + '｜予算 ' + man(v.budget) + '｜希望 ' + (v.wantCat || "指定なし") + '｜許容走行 ' + kmf(v.kmMax) + '</div>';
+  h += '<div class="field"><label>提案する車両（別の在庫車への切り替えも可能）</label><select id="nego-car">' +
+    stockOpts.map(function(c){ return '<option value="' + c.id + '"' + (car && c.id === car.id ? " selected" : "") + '>' + esc(c.mk) + ' ' + esc(c.nm) + '（' + c.year + '年／' + kmf(c.km) + '／' + man(c.askPrice) + '）</option>'; }).join("") + '</select></div>';
+  if (car){
+    var p0 = negoChance(v, car, car.askPrice);
+    h += '<div id="nego-detail">' + negoDetailHtml(v, car) + '</div>';
+    h += '<div class="grid g2" style="margin-top:10px">' +
+      '<button class="btn pri" data-act="nego-do" data-id="' + v.id + '" data-mode="ask">提示価格で勝負（成約見込 ' + p0 + '%）</button>' +
+      '<button class="btn" data-act="nego-do" data-id="' + v.id + '" data-mode="disc5">5%値引き（見込 ' + clamp(p0+10,2,97) + '%）</button>' +
+      '<button class="btn" data-act="nego-do" data-id="' + v.id + '" data-mode="disc10">10%値引き（見込 ' + clamp(p0+20,2,97) + '%）</button>' +
+      '<button class="btn" data-act="nego-do" data-id="' + v.id + '" data-mode="tradein">下取りを提案（見込 ' + clamp(p0+12,2,97) + '%）</button>' +
+      '<button class="btn" data-act="nego-do" data-id="' + v.id + '" data-mode="option">オプション付帯＋6万円（見込 ' + clamp(p0+5,2,97) + '%）</button>' +
+      '<button class="btn dgr" data-act="nego-end" data-id="' + v.id + '">商談を終了する</button></div>';
+  } else {
+    h += '<div class="alertbox">このお客様の希望に合う在庫車がありません。上のリストから車両を選んで「この車で提案」を押してください。</div>' +
+      '<div class="row" style="margin-top:10px"><button class="btn pri" data-act="nego-assign" data-id="' + v.id + '">選んだ車で提案する</button><button class="btn" data-act="close-modal">閉じる</button></div>';
+  }
+  openModal(h);
+  var sel = document.getElementById("nego-car");
+  if (sel) sel.addEventListener("change", function(){
+    v.carId = sel.value;
+    openNego(vId);
+  });
+}
+function negoDetailHtml(v, car){
+  var fit = Math.round(fitScore(v, car));
+  return '<div class="card" style="box-shadow:none"><div class="detail-visual">' + carSVG(car) + '</div><div class="row"><b>' + esc(car.mk) + ' ' + esc(car.nm) + '</b><span class="tag">' + esc(bodyOf(car)) + '</span><span class="tag">' + esc(car.cat) + '</span>' +
+    '<span class="sp"></span><span class="ask num">' + man(car.askPrice) + '</span></div>' +
+    '<div class="spec"><span>' + car.year + '年式</span><span>' + kmf(car.km) + '</span><span>相場 ' + man(carValue(car)) + '</span><span>顧客適合度 ' + fit + '</span></div>' +
+    condBar("外装", car.ext) + condBar("内装", car.int) + condBar("機関", car.mech) +
+    (car.askPrice > v.budget ? '<div class="small neg2" style="margin-top:4px">⚠️ 提示価格が予算を ' + man(car.askPrice - v.budget) + ' 上回っています</div>' : '<div class="small pos" style="margin-top:4px">✓ 予算内です</div>') + '</div>';
+}
+/* ---------- 従業員 ---------- */
+function roleName(id){ return ROLES.filter(function(r){ return r.id===id; })[0].nm; }
+function recordText(s){
+  var r = s.record || { sold:0, serviced:0, bought:0 };
+  var parts = [];
+  if (r.sold) parts.push("販売 " + r.sold + "台");
+  if (r.serviced) parts.push("整備 " + r.serviced + "件");
+  if (r.bought) parts.push("落札 " + r.bought + "件");
+  return parts.length ? parts.join("／") : "まだ実績なし";
+}
+function viewStaff(){
+  var h = '<h2 class="vt">従業員管理 <small>月給合計 ' + man(G.staff.reduce(function(s,x){ return s + x.salary; },0)) + '（月末に現金から差引）</small></h2>';
+  h += '<div class="grid g3">' + G.staff.map(function(s){
+    return '<div class="card"><div class="row"><b>' + esc(s.name) + '</b><span class="tag">' + roleName(s.role) + '</span></div>' +
+      '<div class="kv"><span>経歴</span><b class="small">' + esc(s.career || "—") + '</b></div>' +
+      '<div class="kv"><span>能力</span><b>' + s.skill + '</b></div><div class="kv"><span>経験</span><b>' + s.years + '年</b></div>' +
+      '<div class="kv"><span>在籍中の実績</span><b class="small">' + recordText(s) + '</b></div>' +
+      '<div class="kv"><span>月給</span><b class="num">' + man(s.salary) + '</b></div><div class="kv"><span>疲労</span><b>' + s.fatigue + '</b></div>' +
+      '<div class="small muted">' + ROLES.filter(function(r){ return r.id===s.role; })[0].desc + '</div>' +
+      '<button class="btn sm dgr" style="margin-top:8px" data-act="fire" data-id="' + s.id + '">退職させる</button></div>';
+  }).join("") + '</div>';
+  h += '<h3 class="st">採用候補（毎週月曜に更新）</h3><div class="grid g2">' + G.candidates.map(function(s){
+    return '<div class="card"><div class="row"><b>' + esc(s.name) + '</b><span class="tag">' + roleName(s.role) + '</span>' +
+      '<span class="tag ' + (s.tier === 2 ? "good" : s.tier === 0 ? "warn" : "") + '">' + esc(s.tierLabel || "") + '</span><span class="sp"></span><b>能力 ' + s.skill + '</b></div>' +
+      '<div class="kv"><span>経歴</span><b class="small">' + esc(s.career || "—") + '</b></div>' +
+      '<div class="small muted">経験 ' + s.years + '年｜希望月給 ' + man(s.salary) + (s.tier === 2 ? '｜即戦力だが給与は高め' : s.tier === 0 ? '｜給与は安いが実績を積むと成長する' : '｜給与と能力のバランス型') + '</div>' +
+      '<button class="btn pri sm" style="margin-top:8px" data-act="hire" data-id="' + s.id + '">採用する</button></div>';
+  }).join("") + '</div>';
+  return h;
+}
+
+/* ---------- 店舗・設備 ---------- */
+function viewShop(){
+  var region = REGIONS[G.region], spec = SPECIALTIES[G.spec];
+  var h = '<h2 class="vt">店舗・設備 <small>' + esc(region.nm) + '｜' + esc(spec.nm) + '｜在庫上限 ' + stockCap() + '台</small></h2>';
+  h += '<div class="grid g2">' + FACILITIES.map(function(f){
+    var lv = G.fac[f.id] || 0;
+    var maxed = lv >= f.max;
+    return '<div class="card"><div class="row"><b>' + f.nm + '</b>' + (lv ? '<span class="tag good">導入済' + (f.max > 1 ? " Lv" + lv : "") + '</span>' : '<span class="tag">未導入</span>') + '<span class="sp"></span>' + (maxed ? "" : '<b class="num">' + man(f.cost[lv]) + '</b>') + '</div>' +
+      '<div class="small muted">' + f.desc + '（効果：' + f.eff + '）</div>' +
+      (maxed ? "" : '<button class="btn pri sm" style="margin-top:8px" data-act="facility" data-id="' + f.id + '">投資する</button>') + '</div>';
+  }).join("") + '</div>';
+  h += '<h3 class="st">広告・集客プラン</h3><div class="grid g2">' + AD_PLANS.map(function(a){
+    return '<div class="card"><div class="row"><b>' + a.nm + '</b>' + (G.adPlan === a.id ? '<span class="tag good">実施中</span>' : '') + '<span class="sp"></span><b class="num">' + (a.cost ? man(a.cost) + "/日" : "無料") + '</b></div>' +
+      '<div class="small muted">' + a.desc + '（来店倍率 ×' + a.mult + '）</div>' +
+      (G.adPlan === a.id ? "" : '<button class="btn sm" style="margin-top:8px" data-act="ad" data-id="' + a.id + '">このプランに変更</button>') + '</div>';
+  }).join("") + '</div>';
+  h += '<h3 class="st">借入・返済</h3><div class="card"><div class="kv"><span>借入残高</span><b class="num">' + man(G.loan) + '</b></div>' +
+    '<div class="kv"><span>借入限度額（在庫評価連動）</span><b class="num">' + man(loanLimit()) + '</b></div>' +
+    '<div class="kv"><span>金利</span><b>月0.6%（月末に利息を計上）</b></div>' +
+    '<div class="row" style="margin-top:10px"><button class="btn sm" data-act="loan" data-id="500000">50万円借りる</button><button class="btn sm" data-act="loan" data-id="2000000">200万円借りる</button><button class="btn sm" data-act="loan" data-id="5000000">500万円借りる</button>' +
+    '<button class="btn sm" data-act="loan" data-id="-1000000">100万円返済</button><button class="btn sm" data-act="loan" data-id="-999999999">全額返済</button></div>' +
+    '<div class="small muted" style="margin-top:6px">借入は仕入れの軍資金になりますが、利息と月末返済負担で資金繰りを圧迫します。無計画な借入は倒産の近道です。</div></div>';
+  return h;
+}
+
+/* ---------- 財務 ---------- */
+function finSeries(){
+  var rows = (G.monthHist || []).slice(-11).map(function(r){
+    var exp = r.sales - r.profit;
+    return { l: r.label, sales: r.sales, exp: exp, profit: r.profit, br: r.br || null, partial: false };
+  });
+  var f = G.fin;
+  var expNow = f.cogs + f.service + f.ads + f.transport + f.warranty + f.fees;
+  rows.push({ l: "当月", sales: f.sales, exp: expNow, profit: f.sales - expNow,
+    br: { cogs: f.cogs, service: f.service, ads: f.ads, other: f.transport + f.warranty + f.fees, fixed: 0, interest: 0 }, partial: true });
+  return rows;
+}
+function pairedChart(rows, H){
+  H = H || 170;
+  var max = Math.max.apply(null, rows.map(function(r){ return Math.max(r.sales, r.exp); }).concat([100000]));
+  var W = 660, base = H - 34, slot = W / rows.length, bw = Math.min(26, slot/2 - 5);
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%" role="img" aria-label="月別 収益と出費の棒グラフ">';
+  svg += '<line x1="0" y1="' + base + '" x2="' + W + '" y2="' + base + '" stroke="var(--line)"/>';
+  rows.forEach(function(r, i){
+    var cx = i * slot + slot/2;
+    var hs = Math.max(1, r.sales / max * (base - 22)), he = Math.max(1, r.exp / max * (base - 22));
+    var brTip = r.br ? "｜内訳 原価" + man(r.br.cogs) + " 整備" + man(r.br.service) + " 広告" + man(r.br.ads) + " 家賃・給料等" + man(r.br.fixed + r.br.interest) + " その他" + man(r.br.other) : "";
+    svg += '<g><title>' + esc(r.l) + "：売上 " + man(r.sales) + "／出費 " + man(r.exp) + "／営業利益 " + man(r.profit) + brTip + (r.partial ? "（当月・固定費未計上）" : "") + '</title>';
+    svg += '<rect x="' + (cx - bw - 2) + '" y="' + (base - hs) + '" width="' + bw + '" height="' + hs + '" rx="2" fill="var(--good)"/>';
+    svg += '<rect x="' + (cx + 2) + '" y="' + (base - he) + '" width="' + bw + '" height="' + he + '" rx="2" fill="#d97b2e"/>';
+    svg += '</g>';
+    svg += '<text x="' + cx + '" y="' + (base + 13) + '" font-size="9" text-anchor="middle" fill="var(--muted)">' + esc(r.l.replace(/^\d+年/,"")) + '</text>';
+    svg += '<text x="' + cx + '" y="' + (base + 25) + '" font-size="9" font-weight="700" text-anchor="middle" fill="' + (r.profit >= 0 ? "var(--good)" : "var(--bad)") + '">' + (r.profit >= 0 ? "+" : "−") + man(Math.abs(r.profit)).replace("万円","") + '万</text>';
+  });
+  return svg + '</svg><div class="row small" style="gap:14px"><span><span style="color:var(--good)">■</span> 収益（売上）</span><span><span style="color:#d97b2e">■</span> 出費（費用合計）</span><span class="muted">下段の数字は営業利益（緑＝黒字／赤＝赤字）。棒に触れる／タップで金額詳細</span></div>';
+}
+var BR_SEG = [["cogs","仕入原価","#43617e"],["service","整備費","#2a9d8f"],["fixed","家賃・給料","#6d6fb8"],["interest","利息","#8a6d1f"],["ads","広告費","#d97b2e"],["other","その他費用","#9db0c3"]];
+function stackChart(br){
+  if (!br) return '<div class="small muted">内訳データは次回決算から記録されます。</div>';
+  var total = BR_SEG.reduce(function(s, x){ return s + (br[x[0]] || 0); }, 0);
+  if (total <= 0) return '<div class="small muted">この月の出費はありません。</div>';
+  var x = 0, svg = '<svg viewBox="0 0 660 30" style="width:100%" role="img" aria-label="出費の内訳">';
+  BR_SEG.forEach(function(seg){
+    var v = br[seg[0]] || 0; if (!v) return;
+    var w = Math.max(2, v / total * 660);
+    svg += '<rect x="' + x + '" y="2" width="' + Math.min(w, 660 - x) + '" height="24" fill="' + seg[2] + '"><title>' + seg[1] + "：" + man(v) + '</title></rect>';
+    x += w;
+  });
+  svg += '</svg><div class="row small" style="gap:12px;flex-wrap:wrap">' + BR_SEG.filter(function(seg){ return br[seg[0]]; }).map(function(seg){ return '<span><span style="color:' + seg[2] + '">■</span> ' + seg[1] + ' <b class="num">' + man(br[seg[0]]) + '</b></span>'; }).join("") + '</div>';
+  return svg;
+}
+function finRow(lb, v, bold){
+  return '<tr><td>' + (bold ? "<b>" + lb + "</b>" : lb) + '</td><td class="r num">' + (bold ? "<b>" : "") + '<span class="' + (v < 0 ? "neg2" : "") + '">' + man(v) + '</span>' + (bold ? "</b>" : "") + '</td></tr>';
+}
+function viewFin(){
+  function block(f, title){
+    var gross = f.sales - f.cogs;
+    var op = gross - f.service - f.ads - f.transport - f.warranty - f.fees - f.fixed - f.interest;
+    return '<div class="card"><h3 style="margin:0 0 6px">' + title + '</h3><table class="tbl">' +
+      finRow("売上高", f.sales) + finRow("売上原価（仕入＋整備）", -f.cogs) + finRow("売上総利益", gross, true) +
+      finRow("整備費（販売後・オプション等）", -f.service) + finRow("広告費", -f.ads) + finRow("輸送・手数料", -(f.transport + f.fees)) +
+      finRow("保証修理費", -f.warranty) + finRow("固定費（家賃・給料・光熱）", -f.fixed) + finRow("利息", -f.interest) +
+      finRow("営業利益", op, true) + '</table></div>';
+  }
+  var stockVal = G.inventory.reduce(function(s,c){ return s + carValue(c); }, 0);
+  var h = '<h2 class="vt">財務・損益レポート <small>売上と利益は別物。在庫は現金化するまで利益になりません</small></h2>';
+  var series = finSeries();
+  var latestBr = null;
+  for (var _i = series.length - 1; _i >= 0; _i--){ if (!series[_i].partial && series[_i].br){ latestBr = series[_i]; break; } }
+  if (!latestBr && series.length) latestBr = series[series.length - 1];
+  h += '<div class="card" style="margin-bottom:12px"><h3 style="margin:0 0 6px">📊 月別 収益 vs 出費（直近' + series.length + 'か月）</h3>' + pairedChart(series) +
+    '<h3 style="margin:14px 0 6px">出費の内訳（' + (latestBr ? esc(latestBr.l) + (latestBr.partial ? "・固定費未計上" : "") : "") + '）</h3>' + (latestBr ? stackChart(latestBr.br) : "") + '</div>';
+  h += '<div class="grid g2">' + block(G.fin, "今月（" + monthLabel(G.day) + "・固定費は月末計上）") + block(G.finTotal, "累計") + '</div>';
+  h += '<div class="grid g2" style="margin-top:12px"><div class="card"><h3 style="margin:0 0 6px">貸借対照表（概算）</h3><table class="tbl">' +
+    finRow("現金", G.cash) + finRow("在庫評価額", stockVal) + finRow("資産合計", G.cash + stockVal, true) +
+    finRow("借入金", -G.loan) + finRow("純資産（総資産）", netWorth(), true) + '</table>' +
+    '<div class="small muted">月末固定費の見込み：家賃 ' + man(monthlyFixed().rent) + '＋光熱費 ' + man(monthlyFixed().util) + '＋給料 ' + man(monthlyFixed().sal) + '＋利息 ' + man(Math.round(G.loan*0.006)) + '</div></div>';
+  h += '<div class="card"><h3 style="margin:0 0 6px">月次推移</h3>' + (G.monthHist.length ? '<table class="tbl">' + G.monthHist.slice().reverse().map(function(r){ return '<tr><td>' + r.label + '</td><td class="r num">売上 ' + man(r.sales) + '</td><td class="r num"><span class="' + (r.profit<0?"neg2":"pos") + '">営業利益 ' + man(r.profit) + '</span></td></tr>'; }).join("") + '</table>' : '<div class="small muted">まだ月末決算がありません。日を進めて月を越えると決算が記録されます。</div>') + '</div></div>';
+  h += '<h3 class="st">販売履歴（直近）</h3><div class="card scrollx"><table class="tbl"><tr><th>購入者</th><th>車両</th><th class="r">価格</th><th class="r">満足度</th></tr>' +
+    (G.customers.slice(0, 15).map(function(c){ return '<tr><td>' + esc(c.name) + '</td><td>' + esc(c.car) + '</td><td class="r num">' + man(c.price) + '</td><td class="r">' + c.satis + '</td></tr>'; }).join("") || '<tr><td colspan="4" class="muted">まだ販売実績がありません</td></tr>') + '</table></div>';
+  return h;
+}
+
+/* ---------- 相場 ---------- */
+function viewMarket(){
+  var h = '<h2 class="vt">市場相場 <small>カテゴリ別指数（100＝基準）と予測。予測は外れることもあります</small></h2>';
+  h += '<div class="card"><div class="kv"><span>ガソリン価格</span><b class="num">' + G.fuel + '円/L</b></div><div class="kv"><span>景気指数</span><b>' + Math.round(G.economy * 100) + '</b></div>' +
+    '<div class="kv"><span>季節要因</span><b>' + seasonNote() + '</b></div></div>';
+  h += '<div class="card scrollx" style="margin-top:12px"><table class="tbl"><tr><th>カテゴリ</th><th class="r">現在指数</th><th class="r">来月の予測</th><th>自店在庫</th><th>見方</th></tr>' +
+    CATS.map(function(c){
+      var idx = G.market[c];
+      var drift = (idx - 1) * 0.3 + rnd(-0.012, 0.018);
+      var fc = clamp(idx * (1 + drift), 0.7, 1.6);
+      var n = G.inventory.filter(function(x){ return x.cat === c; }).length;
+      var arrow = idx >= 1.03 ? "📈 上昇基調" : idx <= 0.97 ? "📉 下落基調" : "➡️ 横ばい";
+      return '<tr><td><b>' + c + '</b></td><td class="r num">' + Math.round(idx * 100) + '</td><td class="r num">' + Math.round(fc * 100) + ' 前後</td><td>' + n + '台</td><td class="small">' + arrow + (n && idx >= 1.03 ? "｜在庫あり：売り時" : n && idx <= 0.97 ? "｜在庫あり：値下げか長期戦" : "") + '</td></tr>';
+    }).join("") + '</table></div>';
+  h += '<div class="card small" style="margin-top:12px">相場は日々変動します。指数が高いカテゴリは高く売れますが、仕入れ価格も上がります。「安い時に仕入れて高い時に売る」が基本です。季節要因（新生活シーズンの軽・ミニバン、冬のSUV、夏のスポーツカー）も価格に反映されます。</div>';
+  return h;
+}
+function seasonNote(){
+  var dt = new Date(2026,3,1); dt.setDate(dt.getDate() + G.day - 1);
+  var m = dt.getMonth() + 1;
+  if (m >= 2 && m <= 4) return "新生活需要（軽・コンパクト・ミニバン＋）";
+  if (m >= 11 || m === 12) return "冬のSUV需要＋";
+  if (m >= 6 && m <= 8) return "夏のスポーツカー需要＋";
+  return "特になし";
+}
+
+/* ---------- ニュース ---------- */
+function viewNews(){
+  var h = '<h2 class="vt">イベント・ニュース <small>経営の出来事と市場イベントの記録</small></h2><div class="card">';
+  h += G.news.length ? G.news.map(newsItem).join("") : '<div class="muted small">まだニュースがありません</div>';
+  return h + '</div>';
+}
+
+/* ---------- 実績・顧客 ---------- */
+function viewAch(){
+  var h = '<h2 class="vt">実績・統計 <small>解除 ' + Object.keys(G.ach).length + ' / ' + ACHIEVEMENTS.length + '</small></h2>';
+  h += '<div class="grid g3">' + ACHIEVEMENTS.map(function(a){
+    var got = G.ach[a.id];
+    return '<div class="card ach"><div class="ic">' + (got ? a.ic : "🔒") + '</div><div><b>' + a.nm + '</b>' + (got ? ' <span class="tag good">' + dateStr(got) + ' 達成</span>' : '') + '<div class="small muted">' + a.desc + '</div></div></div>';
+  }).join("") + '</div>';
+  var s = G.stats;
+  h += '<h3 class="st">経営統計</h3><div class="grid g4">' +
+    kpi("累計販売台数", s.soldCount + "台", "") + kpi("累計仕入台数", s.boughtCount + "台", "") +
+    kpi("商談成績", s.negoWin + "勝 " + s.negoLose + "敗", "成約率 " + negoRate() + "%") +
+    kpi("クレーム対応", s.claims + "件", "買取 " + s.buybacks + "件／下取り " + s.tradeins + "件／落札 " + s.auctions + "件") + '</div>';
+  h += '<h3 class="st">顧客リスト（購入者）</h3><div class="card scrollx"><table class="tbl"><tr><th>購入者</th><th>車両</th><th>購入日</th><th class="r">価格</th><th class="r">満足度</th></tr>' +
+    (G.customers.map(function(c){ return '<tr><td>' + esc(c.name) + '</td><td>' + esc(c.car) + '</td><td>' + dateStr(c.day) + '</td><td class="r num">' + man(c.price) + '</td><td class="r">' + c.satis + (c.satis >= 75 ? ' <span class="tag good">リピート期待</span>' : '') + '</td></tr>'; }).join("") || '<tr><td colspan="5" class="muted">まだ顧客がいません</td></tr>') + '</table></div>';
+  return h;
+}
+
+/* ---------- 設定・セーブ ---------- */
+function viewSet(){
+  var h = '<h2 class="vt">設定・セーブ管理</h2><div class="grid g2">' +
+    '<div class="card"><h3 style="margin:0 0 8px">セーブ</h3>' +
+    '<p class="small muted">進行状況は操作のたびにこの端末のブラウザへ自動保存されます（バージョン ' + SAVE_VER + '）。手動セーブも可能です。</p>' +
+    '<div class="row"><button class="btn pri" data-act="save-now">今すぐセーブ</button><button class="btn" data-act="load-now">セーブを読み込む</button></div>' +
+    '<p class="small" style="margin-top:10px">店舗名：' + esc(G.shopName) + '｜経営 ' + G.day + '日目｜難易度 ' + DIFFS[G.diff].nm + '｜地域 ' + REGIONS[G.region].nm + '｜方針 ' + SPECIALTIES[G.spec].nm + '</p></div>' +
+    '<div class="card"><h3 style="margin:0 0 8px">データ管理</h3>' +
+    '<p class="small muted">セーブを削除してタイトルに戻ります。削除したデータは復旧できません。</p>' +
+    '<button class="btn dgr" data-act="wipe">セーブ削除してタイトルへ</button></div></div>' +
+    '<div class="card" style="margin-top:12px"><h3 style="margin:0 0 8px">遊び方ガイド</h3><div class="small">' +
+    '<p><b>1. 仕入れ</b>：オークションは安いが不確定、買取は交渉次第、業者間は確実だが割高。相場より安く仕入れるのが利益の源泉です。</p>' +
+    '<p><b>2. 商品化</b>：整備は費用がかかりますが、販売価格・成約率・顧客満足度が上がり、クレームが減ります。整備しすぎると赤字になる車もあります。</p>' +
+    '<p><b>3. 価格設定</b>：相場の前後が基本。高すぎると在庫が滞留し保管費と値下がりで蝕まれます。</p>' +
+    '<p><b>4. 商談</b>：顧客の予算と希望に合う車を提案。値引き・下取り・オプションの使い分けが腕の見せ所です。</p>' +
+    '<p><b>5. 資金繰り</b>：月末に家賃・給料・利息が一括で引かれます。現金がマイナスで月を越えると倒産します。</p>' +
+    '<p><b>6. 成長</b>：利益で設備投資（展示場・整備工場・第2店舗）と採用を進め、総資産1億円の「中古車王」を目指しましょう。</p></div></div>';
+  return h;
+}
+
+/* ---------- モーダル ---------- */
+function openModal(html){
+  var m = document.getElementById("modal");
+  m.innerHTML = '<div class="mbox-bg" data-act="close-modal"></div><div class="mbox">' + html + '</div>';
+  m.classList.add("open");
+}
+function closeModal(){
+  var m = document.getElementById("modal");
+  m.classList.remove("open"); m.innerHTML = "";
+}
+var _confirmCb = null;
+function confirmInPage(msg, cb){
+  _confirmCb = cb;
+  openModal('<h3>確認</h3><p>' + esc(msg) + '</p><div class="row"><button class="btn dgr" id="cf-yes">削除する</button><button class="btn" data-act="close-modal">キャンセル</button></div>');
+  document.getElementById("cf-yes").addEventListener("click", function(){ closeModal(); if (_confirmCb) _confirmCb(); });
+  return true;
+}
+function openMonthReport(){
+  var r = G.monthReport; G.monthReport = null;
+  var h = '<h3>📊 ' + r.label + ' 決算レポート</h3><table class="tbl">' +
+    finRow("売上高", r.sales) + finRow("売上原価", -r.cogs) + finRow("売上総利益", r.gross, true) +
+    finRow("整備費", -r.service) + finRow("広告費", -r.ads) + finRow("輸送・手数料・保管", -(r.transport + r.fees)) +
+    finRow("保証修理費", -r.warranty) + finRow("家賃", -r.fixed.rent) + finRow("光熱費", -r.fixed.util) + finRow("給料", -r.fixed.sal) +
+    finRow("利息", -r.interest) + finRow("営業利益", r.op, true) + '</table>' +
+    '<p class="small">決算後の現金残高：<b class="num">' + man(r.cash) + '</b>' + (r.op >= 0 ? '｜黒字決算です。この調子で拡大を目指しましょう。' : '｜赤字決算。仕入れ単価・価格・固定費の見直しを。') + '</p>' +
+    '<button class="btn pri" data-act="close-modal">確認した</button>';
+  openModal(h);
+  saveGame();
+}
+
+/* ---------- イベント委譲 ---------- */
+document.addEventListener("click", function(e){
+  var b = e.target.closest("[data-act]");
+  if (!b) return;
+  var act = b.getAttribute("data-act"), id = b.getAttribute("data-id");
+  if (act === "tab"){ UI.view = id; closeModal(); render(); window.scrollTo(0,0); }
+  else if (act === "next-day"){ advanceDay(); }
+  else if (act === "sort"){ UI.sortStock = id; render(); }
+  else if (act === "car-detail"){ openCarDetail(id); }
+  else if (act === "close-modal"){ closeModal(); }
+  else if (act === "dealer-sell"){ closeModal(); doDealerSell(id); }
+  else if (act === "bid"){ var inp = document.getElementById("bid-" + id); var v = inp ? Math.round(parseFloat(inp.value) * 10000) : 0; if (v > 0) bidAuction(parseInt(id,10), v); else toast("入札額を入力してください"); }
+  else if (act === "buyback"){ var inp2 = document.getElementById("buy-" + id); var v2 = inp2 ? Math.round(parseFloat(inp2.value) * 10000) : 0; if (v2 > 0) doBuyback(parseInt(id,10), v2); else toast("提示額を入力してください"); }
+  else if (act === "dealer-buy"){ doDealerBuy(parseInt(id,10)); }
+  else if (act === "refresh-market"){ if (G.cash >= 10000){ G.cash -= 10000; addFin("fees", 10000); refreshMarket(false); saveGame(); render(); } else toast("資金不足です"); }
+  else if (act === "service"){ orderService(id, b.getAttribute("data-job"), parseInt(b.getAttribute("data-q"),10)); var c = findCar(id); if (c) openCarDetail(id); }
+  else if (act === "set-price"){ var pi = document.getElementById("price-in"); if (pi){ setPrice(id, parseFloat(pi.value) * 10000); openCarDetail(id); toast("販売価格を設定しました"); } }
+  else if (act === "set-price-suggest"){ var cc = findCar(id); if (cc){ setPrice(id, suggestPrice(cc)); openCarDetail(id); } }
+  else if (act === "nego-open"){ openNego(id); }
+  else if (act === "nego-do"){ resolveNego(id, b.getAttribute("data-mode")); }
+  else if (act === "nego-end"){ G.visitors = G.visitors.filter(function(x){ return x.id !== id; }); closeModal(); saveGame(); render(); }
+  else if (act === "nego-assign"){ var sel = document.getElementById("nego-car"); if (sel){ G.visitors.forEach(function(x){ if (x.id === id) x.carId = sel.value; }); openNego(id); } }
+  else if (act === "claim"){ resolveClaim(id, b.getAttribute("data-mode")); }
+  else if (act === "claim-goto"){ gotoClaims(); }
+  else if (act === "claim-proceed"){ closeModal(); advanceDay(true); }
+  else if (act === "hire"){ hireStaff(id); }
+  else if (act === "fire"){ fireStaff(id); }
+  else if (act === "facility"){ buyFacility(id); }
+  else if (act === "ad"){ setAdPlan(parseInt(id,10)); }
+  else if (act === "loan"){ doLoan(parseInt(id,10)); }
+  else if (act === "save-now"){ saveGame(); toast("セーブしました"); }
+  else if (act === "load-now"){ var d = loadSave(); if (d){ G = d; UI.view = "dash"; render(); toast("読み込みました"); } else toast("読み込めるセーブがありません"); }
+  else if (act === "wipe" || act === "restart"){ confirmInPage("セーブデータを削除してタイトルに戻りますか？", function(){ wipeSave(); G = null; UI.started = false; render(); }); }
+});
+
+/* ---------- 初期化 ---------- */
+render();
+</script>
+</body>
+</html>
